@@ -1,0 +1,45 @@
+.index {
+  height: 100vh;
+}
+
+.hotel-pic {
+  position: relative;
+  height: 200PX;
+  width: 100%;
+  margin-bottom: 10PX;
+
+  &:before {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.15);
+    z-index: 1;
+  }
+
+  .hotel-price-wrap {
+    position: absolute;
+    top: 10PX;
+    left: 0;
+    width: 100%;
+    z-index: 2;
+
+    .hotel-price{
+      height: 24PX;
+      line-height: 24PX;
+      border-top-left-radius: 12PX;
+      border-bottom-left-radius: 12PX;
+    }
+  }
+
+  .hotel-name-wrap{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 2;
+  }
+}

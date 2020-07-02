@@ -1,0 +1,25 @@
+.page{
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+}
+.action-item{
+  width:20PX;
+  height:20PX;
+  line-height: 20PX;
+  text-align: center;
+  border:1PX solid rgba(70,71,72,1);
+}
+
+.footer-booking-wrap{
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 56PX;
+  border-top: 1PX solid rgba(223,223,223,1);
+  width: 100%;
+  .booking-btn{
+    height: 56PX;
+    line-height: 56PX;
+  }
+}

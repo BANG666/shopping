@@ -1,0 +1,23 @@
+{
+  "miniprogramRoot": "./dist",
+  "projectname": "shopping-mall-program",
+  "description": "",
+  "appid": "wx5b18c35ceab43832",
+  "setting": {
+    "urlCheck": true,
+    "es6": false,
+    "postcss": false,
+    "minified": false
+  },
+  "compileType": "miniprogram",
+  "condition": {
+    "current": 0,
+    "list": [
+      {
+        "name": "酒店详情1",
+        "path": "pages/hotelDetail/index",
+        "query": ""
+      }
+    ]
+  }
+}
