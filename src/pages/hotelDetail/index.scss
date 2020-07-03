@@ -1,0 +1,123 @@
+.hotel-pic-wrap {
+  position: relative;
+  height: 200Px;
+
+  &:before {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.15);
+    z-index: 1;
+  }
+
+  .hotel-name-wrap {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 2;
+  }
+}
+
+.map-icon-wrap {
+  max-height: 60PX;
+  overflow: hidden;
+
+  .hotel-map-icon {
+    width: 144PX;
+    height: 60PX;
+  }
+}
+
+.hotel-facilities-wrap {
+  height: 40Px;
+}
+
+.collapse-cell--hover {
+  background-color: #f1f1f1;
+}
+
+.collapse-cell--open {
+  background-color: #f1f1f1;
+}
+
+.collapse-cell--disabled {
+  background-color: #f1f1f1;
+}
+
+.collapse-cell--hide {
+  height: 160Px;
+}
+
+.collapse-cell--animation {
+  transition: transform 0.3s ease;
+}
+
+.collapse-cell__content {
+  overflow: hidden;
+  padding: 0 10Px;
+  background: rgba(244, 244, 244, 1);
+}
+
+.collapse-cell__content--hide {
+  height: 0;
+  line-height: 0;
+}
+
+.collapse-cell__wrapper {
+  padding: 16Px;
+  background: #fff;
+}
+
+.roomFacilities-wrap {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  flex-wrap: wrap;
+
+  .roomFacilities {
+    flex: 0 0 33%;
+    margin: 0;
+
+    .item{
+      margin: 8Px;
+    }
+
+    .facilities-val{
+      margin-left: 8Px;
+      font-size: 13Px;
+    }
+
+    .cuIcon-area:before {
+      content: "\e630";
+    }
+
+    .cuIcon-floor:before {
+      content: "\e72a";
+    }
+
+    .cuIcon-guests:before {
+      content: "\e7b9";
+    }
+
+    .cuIcon-bed:before {
+      content: "\e605";
+    }
+
+    .cuIcon-window:before {
+      content: "\e6aa";
+    }
+
+    .cuIcon-wifi:before {
+      content: "\e6a9";
+    }
+  }
+}
+
+.room-pic {
+  height: 160Px;
+}

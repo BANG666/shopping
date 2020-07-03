@@ -12,4 +12,20 @@
   top: -40Px;
   width: 345Px;
   margin: 0 auto;
+  box-shadow: 0 2PX 4PX 0 rgba(234,234,234,1);
+  .form-item{
+    height: 50Px;
+    //line-height: 50Px;
+  }
+  .dateNum{
+    width:71Px;
+    height:25Px;
+    line-height: 25Px;
+    border-radius:13Px;
+    border:1Px solid rgba(217,217,217,1);
+  }
+  .form-btn{
+    height: 50Px;
+    line-height: 50Px;
+  }
 }

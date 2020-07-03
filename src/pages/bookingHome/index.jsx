@@ -1,15 +1,22 @@
 import React from 'react';
 import { Component } from '@tarojs/taro';
 import { Image, Text, View } from '@tarojs/components';
-
+import { connect } from '@tarojs/redux';
+import moment from 'moment';
+import { AtCalendar, AtFloatLayout } from 'taro-ui';
 import './index.scss';
+import { getDay } from '../../utils/util';
 
+@connect(({ hotelModel }) => ({
+  params: hotelModel.params
+}))
 class BookingHome extends Component {
   constructor (props) {
     super(props);
-    this.state = {};
+    this.state = {
+      openDate: false
+    };
   }
-
 
   config = {
     navigationBarTitleText: '锦江Wehotel'
@@ -24,18 +31,81 @@ class BookingHome extends Component {
   componentDidHide () {
   };
 
+  handleClose = () => {};
+
+  onDayClick = item => {
+    console.log(item, 'dataClick');
+  };
+
+  onSelectDate = item => {
+    console.log(item, 'onSelectDate1');
+  };
+
   render () {
+    const { openDate } = this.state;
+    const { params } = this.props;
+    const { checkInAt, checkOutAt, cityName, guestCount, roomCount, dateNum } = params;
     return (
       <View className='index'>
+        <View className='pageTopLine' />
         <View className='home-banner'>
           <Image lazyLoad src='http://img1.imgtn.bdimg.com/it/u=1809468132,2618176109&fm=26&gp=0.jpg' />
         </View>
-        <View className='form-wrap bg-white'>
-          <View className='flex justify-between align-center'>
-            <Text>上海</Text>
-            <Text>></Text>
+        <View className='form-wrap bg-white padding-lg'>
+          <View className='flex justify-between align-center solid-bottom form-item'
+                onClick={ () => Taro.navigateTo({ url: '/pages/city/index' }) }>
+            <Text className='text-lg text-bold-5'>{ cityName }</Text>
+            <Text className='cuIcon-right text-gray-d9' />
+          </View>
+          <View className='flex justify-between align-center solid-bottom form-item'
+                onClick={ () => this.setState({ openDate: true }) }>
+            <View className='flex align-center'>
+              <View className='text-ml'>{ moment(checkInAt).format('DD') }</View>
+              <View className='margin-left-md'>
+                <View className='text-xs'>{ getDay(moment(checkInAt).weekday()) }</View>
+                <View className='text-xs'>{ moment(checkInAt).format('M') }月</View>
+              </View>
+            </View>
+            <View className='dateNum text-center text-gray-8 text-sm'>{ dateNum }晚</View>
+            <View className='flex align-center'>
+              <View className='text-ml'>{ moment(checkOutAt).format('DD') }</View>
+              <View className='margin-left-md'>
+                <View className='text-xs'>{ getDay(moment(checkOutAt).weekday()) }</View>
+                <View className='text-xs'>{ moment(checkOutAt).format('M') }月</View>
+              </View>
+            </View>
+          </View>
+          <View className='flex justify-between align-center solid-bottom form-item'>
+            <View>
+              <Text className='text-ml'>{ roomCount }</Text>
+              <Text className='text-base'>间</Text>
+            </View>
+            <View>
+              <Text className='text-ml'>{ guestCount }</Text>
+              <Text className='text-base'>成人</Text>
+            </View>
+          </View>
+          <View className='form-btn bg-main text-lg text-center margin-top-lg'
+                onClick={ () => Taro.navigateTo({ url: '/pages/hotelList/index' }) }>
+            查找酒店
           </View>
         </View>
+        <AtFloatLayout isOpened={ openDate } title="选择日期" onClose={ this.handleClose }>
+          {
+            openDate ? (
+              <AtCalendar isMultiSelect
+                          isVertical
+                          minDate={ moment().subtract(1, 'days') }
+                          maxDate={ moment().add(6, 'M') }
+                          onDayClick={ this.onDayClick }
+                          onSelectDate={ this.onSelectDate }
+                          currentDate={ {
+                            start: checkInAt,
+                            end: checkOutAt
+                          } } />
+            ) : null
+          }
+        </AtFloatLayout>
       </View>
     );
   }

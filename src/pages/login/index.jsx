@@ -63,6 +63,7 @@ class Login extends Component {
   render () {
     return (
       <View className='index'>
+        <View className='pageTopLine' />
         <AtMessage />
         <View><Text>login</Text></View>
       </View>

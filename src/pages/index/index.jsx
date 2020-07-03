@@ -2,6 +2,7 @@ import { Component } from '@tarojs/taro';
 import { Image, ScrollView, Swiper, SwiperItem, View } from '@tarojs/components';
 import { AtSearchBar } from 'taro-ui';
 import './index.scss';
+import React from 'react';
 
 
 class Index extends Component {
@@ -45,6 +46,7 @@ class Index extends Component {
   render () {
     return (
       <View className='index'>
+        <View className='pageTopLine' />
         <AtSearchBar
           value={ this.state.value }
           onChange={ this.onChange }
@@ -76,7 +78,7 @@ class Index extends Component {
           </Swiper>
         </View>
         <View className='padding-top-lg margin-bottom-lg'>
-          <View className='text-xl text-bold margin-bottom-md padding-left-lg padding-right-lg'>热卖中</View>
+          <View className='text-base text-bold margin-bottom-md padding-left-lg padding-right-lg'>热卖中</View>
           <ScrollView
             className='scrollView padding-left-lg'
             scrollX
@@ -92,7 +94,7 @@ class Index extends Component {
           </ScrollView>
         </View>
         <View className='padding-top-lg'>
-          <View className='text-xl text-bold margin-bottom-md padding-left-lg padding-right-lg'>今日特价</View>
+          <View className='text-base text-bold margin-bottom-md padding-left-lg padding-right-lg'>今日特价</View>
           <View className='margin-lg' style={ { height: '150px', background: '#f1f1f1' } }>1</View>
           <View className='margin-lg' style={ { height: '150px', background: '#f1f1f1' } }>2</View>
           <View className='margin-lg' style={ { height: '150px', background: '#f1f1f1' } }>3</View>

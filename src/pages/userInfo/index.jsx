@@ -4,7 +4,7 @@ import { Text, View } from '@tarojs/components';
 
 import './index.scss';
 
-class Coupon extends Component {
+class UserInfo extends Component {
   constructor (props) {
     super(props);
     this.state = {};
@@ -28,10 +28,10 @@ class Coupon extends Component {
     return (
       <View className='index'>
         <View className='pageTopLine' />
-        <View><Text>coupon</Text></View>
+        <View><Text>userInfo</Text></View>
       </View>
     );
   }
 }
 
-export default Coupon;
+export default UserInfo;

@@ -5,10 +5,12 @@ import { Provider } from '@tarojs/redux';
 import Index from './pages/index';
 
 import configStore from './redux/store';
-import './custom-theme.scss';
-import './app.scss';
 import { getUserInfo } from './servers/servers';
 import { UPDATE_USER } from './redux/actions/user';
+import './style/custom-theme.scss';
+import './style/animation.css';
+import './style/iconfont.css';
+import './app.scss';
 
 // 如果需要在 h5 环境中开启 React Devtools
 // 取消以下注释：
@@ -23,12 +25,14 @@ class App extends Component {
   config = {
     pages: [
       'pages/index/index',
+      'pages/userInfo/index',
       'pages/coupon/index',
       'pages/bookingHome/index',
       'pages/hotelList/index',
       'pages/hotelDetail/index',
       'pages/couPonDetail/index',
       'pages/confirmCoupon/index',
+      'pages/city/index',
       'pages/login/index',
     ],
     window: {
@@ -56,12 +60,11 @@ class App extends Component {
           text: '我的券'
         },
         {
-          pagePath: 'pages/couPonDetail/index',
-          iconPath: 'assets/image/tabbar/home.png',
-          selectedIconPath: 'assets/image/tabbar/home_select.png',
-          text: '酒店详情'
+          pagePath: 'pages/userInfo/index',
+          iconPath: 'assets/image/tabbar/mine.png',
+          selectedIconPath: 'assets/image/tabbar/mine_select.png',
+          text: '我的'
         },
-
       ]
     },
     permission: {

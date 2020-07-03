@@ -1,3 +1,9 @@
+.index{
+  position: relative;
+  padding-bottom: 60Px;
+  min-height: 100vh;
+}
+
 .hotel-cover {
   height: 212PX;
 }
@@ -8,5 +14,16 @@
   .segmented-item {
     height: 48PX;
     line-height: 40PX;
+  }
+}
+
+.booking-btn{
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  .at-button{
+    height: 40Px;
+    line-height: 40Px;
   }
 }

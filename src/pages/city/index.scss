@@ -1,0 +1,24 @@
+$mainColor: #ffa940;
+.index{
+  height: 100vh;
+  position: relative;
+  padding-top: 42Px;
+}
+
+.city-list{
+  height: calc(100vh - 42Px);
+}
+
+.at-indexes__menu-item{
+  color: $mainColor;
+}
+
+.search-result-wrap{
+  position: absolute;
+  top: 42Px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,.3);
+  z-index: 806;
+}
