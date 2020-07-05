@@ -34,6 +34,7 @@ class App extends Component {
       'pages/confirmCoupon/index',
       'pages/city/index',
       'pages/login/index',
+      'pages/calendar/index'
     ],
     window: {
       backgroundTextStyle: 'light',

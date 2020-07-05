@@ -21,11 +21,11 @@ const config = {
       'transform-class-properties',
       'transform-object-rest-spread',
       ['transform-runtime', {
-          helpers: false,
-          polyfill: false,
-          regenerator: true,
-          moduleName: 'babel-runtime'
-        }
+        helpers: false,
+        polyfill: false,
+        regenerator: true,
+        moduleName: 'babel-runtime'
+      }
       ]
     ]
   },
@@ -33,8 +33,7 @@ const config = {
     '@tarojs/plugin-sass',
     '@tarojs/plugin-terser'
   ],
-  defineConstants: {
-  },
+  defineConstants: {},
   mini: {
     postcss: {
       autoprefixer: {
@@ -49,9 +48,7 @@ const config = {
       },
       pxtransform: {
         enable: true,
-        config: {
-
-        }
+        config: {}
       },
       url: {
         enable: true,

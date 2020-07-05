@@ -3,7 +3,7 @@ import { Component } from '@tarojs/taro';
 import { Image, Text, View } from '@tarojs/components';
 
 import './index.scss';
-import _ from 'lodash';
+import _ from 'underscore';
 import { formatRoomBed, formatRoomWifi, formatRoomWindow } from '../../utils/util';
 
 function generateUUID () {
@@ -183,7 +183,7 @@ class HotelDetail extends Component {
                   }
                 }
               );
-              console.log(roomCharacteristic);
+              // console.log(roomCharacteristic);
               return (
                 <View key={ index } className={ `${ isOpen ? '' : 'collapse-cell--hide' } ` }
                       onClick={ () => this.handleRoomItemClick(item) }>

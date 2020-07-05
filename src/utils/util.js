@@ -1,4 +1,5 @@
 import Taro from '@tarojs/taro';
+import dayJs from 'dayjs';
 
 // 获取当前页url
 export const getCurrentPageUrl = () => {
@@ -91,3 +92,7 @@ export const formatRoomWifi = key => {
   };
   return obj[key];
 };
+
+// 计算两个时间相差的天数
+export const dateSpace = (checkItAt, checkOutAt) =>
+  dayJs(checkOutAt).diff(dayJs(checkItAt), 'd');

@@ -1,0 +1,70 @@
+$mainColor: #ffa940;
+
+.index{
+  height: 100vh;
+  overflow: hidden;
+}
+.top-date-wrap {
+  height: 100PX;
+
+  .dividing-line {
+    height: 36PX;
+    width: 1Px;
+    background: #000;
+    transform: rotate(10deg);
+  }
+
+  .date-num {
+    font-size: 40PX;
+  }
+}
+
+.calendar-scrollView {
+  height: calc(100vh - 130Px);
+}
+
+.calendar-week-title {
+  height: 30PX;
+  background: rgba(255, 169, 52, 0.1);
+}
+
+.calendar-title {
+  width: 100%;
+  font-weight: 700;
+  color: #444;
+  background: #f7fafb;
+  padding: 0 1em;
+  line-height: 2.1em;
+}
+
+.calendar_date_item {
+  min-width: 14.28%;
+  max-width: 14.28%;
+  height: 13vw;
+  padding-top: 4vw;
+  display: inline-block;
+  color: #333;
+
+  &.disabled {
+    color: #bbb;
+  }
+
+  &.notAvailable {
+    color: #bbb;
+    padding-top: 2vw;
+  }
+
+  &.selected {
+    background: rgba(255, 169, 52, 0.1);
+  }
+
+  &.weekend {
+    color: $mainColor;
+  }
+
+  &.current {
+    background: $mainColor;
+    color: #fff;
+    padding-top: 2vw;
+  }
+}

@@ -2,7 +2,7 @@ import React from 'react';
 import { Component } from '@tarojs/taro';
 import { View } from '@tarojs/components';
 import { AtIndexes, AtSearchBar } from 'taro-ui';
-import _ from 'lodash';
+import _ from 'underscore';
 import { connect } from '@tarojs/redux';
 import { cities } from '../../assets/city';
 import { UPDATE_PARAMS } from '../../redux/actions/hotel';

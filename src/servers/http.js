@@ -1,5 +1,5 @@
 import Taro from '@tarojs/taro';
-import _ from 'lodash';
+import _ from 'underscore';
 import getBaseUrl from './baseUrl';
 import interceptors from './interceptors';
 

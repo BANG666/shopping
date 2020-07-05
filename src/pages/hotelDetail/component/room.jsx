@@ -1,7 +1,7 @@
 import React from 'react';
 import { Component } from '@tarojs/taro';
 import { Image, View, Text } from '@tarojs/components';
-import _ from 'lodash';
+import _ from 'underscore';
 import { formatRoomBed, formatRoomWifi, formatRoomWindow } from '../../../utils/util';
 import '../index.scss';
 

@@ -1,7 +1,7 @@
-import moment from 'moment';
+import dayJs from 'dayjs';
 import { cities } from '../../../assets/city';
 
-function cityList () {
+function cityList() {
   const tmp = [];
   const cityList = [
     {
@@ -140,16 +140,16 @@ function cityList () {
       key: 'Z'
     }
   ];
-  for ( let i = 0; i < cityList.length; i++ ) {
-    const item = cityList[ i ].title;
-    for ( let j = 0; j < cities.length; j++ ) {
-      const py = cities[ j ].pinyin;
-      if ( py.substring(0, 1).toUpperCase() === item.toUpperCase() ) {
-        if ( tmp.indexOf(item) === -1 ) {
-          cityList[ i ][ 'items' ] = [ cities[ j ] ];
+  for (let i = 0; i < cityList.length; i++) {
+    const item = cityList[i].title;
+    for (let j = 0; j < cities.length; j++) {
+      const py = cities[j].pinyin;
+      if (py.substring(0, 1).toUpperCase() === item.toUpperCase()) {
+        if (tmp.indexOf(item) === -1) {
+          cityList[i]['items'] = [cities[j]];
           tmp.push(item);
         } else {
-          cityList[ i ][ 'items' ].push(cities[ j ]);
+          cityList[i]['items'].push(cities[j]);
         }
       }
     }
@@ -164,13 +164,13 @@ const initSate = {
     cityName: '上海市',
     guestCount: 1,
     roomCount: 1,
-    checkInAt: moment()
-      .startOf('day')
+    checkInAt: dayJs()
+      .startOf('d')
       .toDate()
       .toISOString(),
-    checkOutAt: moment()
-      .startOf('day')
-      .add(1, 'days')
+    checkOutAt: dayJs()
+      .startOf('d')
+      .add(1, 'd')
       .toDate()
       .toISOString(),
     dateNum: 1

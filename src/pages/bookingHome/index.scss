@@ -1,30 +1,34 @@
-.index{
+.index {
   height: 100vh;
+  background: #f9f9f9;
 }
 
-.home-banner{
+.home-banner {
   height: 225PX;
   width: 100%;
 }
 
-.form-wrap{
+.form-wrap {
   position: relative;
   top: -40Px;
-  width: 345Px;
+  width: 90%;
   margin: 0 auto;
-  box-shadow: 0 2PX 4PX 0 rgba(234,234,234,1);
-  .form-item{
+  box-shadow: 0 2PX 4PX 0 rgba(234, 234, 234, 1);
+
+  .form-item {
     height: 50Px;
     //line-height: 50Px;
   }
-  .dateNum{
-    width:71Px;
-    height:25Px;
+
+  .dateNum {
+    width: 71Px;
+    height: 25Px;
     line-height: 25Px;
-    border-radius:13Px;
-    border:1Px solid rgba(217,217,217,1);
+    border-radius: 13Px;
+    border: 1Px solid rgba(217, 217, 217, 1);
   }
-  .form-btn{
+
+  .form-btn {
     height: 50Px;
     line-height: 50Px;
   }
