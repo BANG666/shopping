@@ -45,7 +45,7 @@ class ConfirmCoupon extends Component {
                 this.setState({ count: count - 1 });
               }
             } }>-</View>
-            <View className='margin-left-lg margin-right-lg'>{ count }</View>
+            <View className='margin-lr-lg'>{ count }</View>
             <View className='action-item plus' onClick={ () => this.setState({ count: count + 1 }) }>+</View>
           </View>
           <Text className='text-red text-xxl'>¥{ price * count }</Text>

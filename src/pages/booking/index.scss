@@ -1,0 +1,100 @@
+.index {
+  min-height: 100vh;
+  background: #f4f4f4;
+}
+
+.gradients {
+  background-image: linear-gradient(#ffa940, #f4f4f6 99%);
+
+  .room-info-card {
+    min-height: 96Px;
+    border-radius: 5Px;
+
+    .checkInDate {
+      border-bottom: 1Px dashed rgba(0, 0, 0, .3);
+    }
+  }
+}
+
+
+.roomFacilities-wrap {
+
+  .roomFacilities {
+    flex: 0 0 33%;
+    margin: 0;
+  }
+}
+
+.cancelInfo {
+  background: rgba(255, 231, 186, .44);
+}
+
+.at-form {
+  &:after {
+    border-top-width: 0;
+    border-bottom-width: 0;
+  }
+
+  .at-input {
+    margin-left: 0;
+
+    &:after{
+      border-color: #eee;
+    }
+
+    .at-input__title {
+      font-size: 12Px;
+      width: 70Px;
+    }
+
+    input {
+      font-size: 12Px;
+    }
+  }
+
+  .at-list__item {
+    padding: 16Px 0;
+    font-size: 12PX;
+
+    &:after{
+      border-color: #eee;
+    }
+
+    .item-extra__info {
+      font-size: 12PX;
+    }
+  }
+
+}
+
+.at-list{
+  &:after{
+    border-color: #eee;
+  }
+}
+
+.placeholder {
+  font-size: 12PX;
+}
+
+.textAreaPlaceholder {
+  font-size: 12PX;
+}
+
+.at-textarea {
+  font-size: 12Px;
+  border-color: #eee;
+}
+
+.at-textarea__textarea {
+  font-size: 12Px;
+}
+
+.at-textarea__counter {
+  font-size: 12PX;
+}
+
+.remark{
+  height: 50PX;
+  line-height: 50PX;
+}

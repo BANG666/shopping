@@ -1,5 +1,11 @@
 import Taro from '@tarojs/taro';
 import dayJs from 'dayjs';
+import _ from 'underscore';
+import LocalizedFormat from 'dayjs/plugin/localizedFormat';
+import 'dayjs/locale/zh-cn';
+import { roomBedType } from '../assets/hotelBase';
+
+dayJs.extend(LocalizedFormat);
 
 // 获取当前页url
 export const getCurrentPageUrl = () => {
@@ -48,27 +54,7 @@ export const getDay = num => {
   return `星期${str}`;
 };
 
-export const roomBedType = [
-  { name: '其它', nameEn: 'Others', code: 'BT00', bedCount: 1 },
-  { name: '双床', nameEn: 'Twin Bed', code: 'BT01', bedCount: 2 },
-  { name: '大床', nameEn: 'Double Bed', code: 'BT02', bedCount: 1 },
-  { name: '单床', nameEn: 'Single Bed', code: 'BT03', bedCount: 1 },
-  { name: '双人大床', nameEn: 'Queen Bed', code: 'BT04', bedCount: 1 },
-  { name: '经济双床', nameEn: 'Semi-double Bed', code: 'BT05', bedCount: 2 },
-  { name: '三床', nameEn: 'Three Bed', code: 'BT06', bedCount: 3 },
-  { name: '四床', nameEn: 'Four Bed', code: 'BT07', bedCount: 4 },
-  { name: '上下铺', nameEn: '上下铺', code: 'BT08', bedCount: 4 },
-  { name: '通铺', nameEn: '通铺', code: 'BT09', bedCount: 1 },
-  { name: '榻榻米', nameEn: '榻榻米', code: 'BT10', bedCount: 1 },
-  { name: '水床', nameEn: '水床', code: 'BT11', bedCount: 1 },
-  { name: '圆床', nameEn: '圆床', code: 'BT12', bedCount: 1 },
-  { name: '拼床', nameEn: '拼床', code: 'BT13', bedCount: 1 },
-  { name: '炕', nameEn: '炕', code: 'BT14', bedCount: 1 },
-  { name: '特殊床型', nameEn: '特殊床型', code: 'BT15', bedCount: 1 },
-  { name: '大/双床', nameEn: '大/双床', code: 'BT17', bedCount: 2 }
-];
-
-export const formatRoomBed = code => _.filter(roomBedType, el => el.code === code) || [];
+export const formatRoomBed = code => _.find(roomBedType, el => el.code === code) || {};
 
 export const formatRoomWindow = key => {
   const obj = {
@@ -96,3 +82,83 @@ export const formatRoomWifi = key => {
 // 计算两个时间相差的天数
 export const dateSpace = (checkItAt, checkOutAt) =>
   dayJs(checkOutAt).diff(dayJs(checkItAt), 'd');
+
+// 格式化取消政策
+export const formatCancellationPolicy = (checkInAt, cancelPolicy = null, cancelSettings = {}) => {
+  const { deadlineDay = 0, deadline = 0 } = cancelSettings;
+  let cancelPolicyStr = '';
+  let dateStr = '';
+  // const getPolicyText = () => {
+  // dayJs.locale('zh-cn');
+  let day = Number(deadlineDay);
+  const hour = Number(deadline).toFixed(0);
+  if (cancelPolicy === 0) {
+    cancelPolicyStr = '不可取消';
+    dateStr =
+      '订单已经确认,不可取消、修改。未入住或取消订单, 全部或部分预付房费不予退还。若您的旅途尚未确定, 望请周知后再做预订';
+  } else if (cancelPolicy === 1) {
+    cancelPolicyStr = '随时取消';
+    const checkIn = dayJs(checkInAt).format('YYYY-MM-DD');
+    const date = dayJs(`${checkIn} 18:00`).locale('zh-cn').format('llll');
+    dateStr = `<span class="text-main margin-right-sm">${date}</span>前可以免费取消`;
+  } else if (cancelPolicy === 2) {
+    cancelPolicyStr = '限时取消';
+    if (day === 0 && dayJs().hour() >= Number(hour) && dayJs().isSame(checkInAt, 'day')) {
+      cancelPolicyStr = '不可取消';
+      dateStr = '已过免费取消时间，完成预订后将不可退改。';
+    } else {
+      let date = dayJs(checkInAt)
+        .subtract(day, 'd')
+        .hour(Number(hour))
+        .locale('zh-cn')
+        .format('llll');
+      if (hour === '0') {
+        day = day + 1;
+        date = dayJs(checkInAt)
+          .subtract(day, 'd')
+          .hour(23)
+          .minute(59)
+          .locale('zh-cn')
+          .format('llll');
+      }
+      if (
+        dayJs(checkInAt)
+          .subtract(day, 'd')
+          .hour(Number(hour))
+          .isBefore(dayJs())
+      ) {
+        cancelPolicyStr = '不可取消';
+        dateStr = '已过免费取消时间，完成预订后将不可退改。';
+      } else {
+        dateStr = `<span class="text-main margin-right-sm">${date}</span>前可以免费取消`;
+      }
+    }
+  } else if (cancelPolicy === 3) {
+    cancelPolicyStr = '付费取消';
+    if (day === 0 && dayJs().hour() >= Number(hour) && dayJs().isSame(checkInAt, 'day')) {
+      dateStr =
+        '订单已经确认,不可取消、修改。未入住或取消订单, 全部或部分预付房费不予退还。若您的旅途尚未确定, 望请周知后再做预订';
+    } else {
+      let date = dayJs(checkInAt)
+        .subtract(day, 'd')
+        .hour(Number(hour))
+        .locale('zh-cn')
+        .format('llll');
+      if (hour === '0') {
+        day = day + 1;
+        date = dayJs(checkInAt)
+          .subtract(day, 'd')
+          .hour(23)
+          .minute(59)
+          .locale('zh-cn')
+          .format('llll');
+      }
+      dateStr = `<span class="text-main margin-right-sm">${date}</span>前可以免费取消, 超时则收取首晚房费`;
+    }
+  }
+
+  return {
+    cancelPolicyStr,
+    dateStr
+  };
+};

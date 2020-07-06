@@ -1,3 +1,8 @@
+.index {
+  min-height: 100vh;
+  background: #f4f4f4;
+}
+
 .hotel-pic-wrap {
   position: relative;
   height: 200Px;
@@ -14,40 +19,36 @@
     z-index: 1;
   }
 
-  .hotel-name-wrap {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    z-index: 2;
+}
+
+.hotel-float-top {
+  position: relative;
+  top: -40Px;
+  left: 0;
+  width: 100%;
+  z-index: 2;
+  margin-bottom: -40PX;
+
+  .hotel-name-wrap, .map-icon-wrap, .hotel-facilities-wrap {
+    background: rgba(255, 255, 255, .9);
+    border-radius: 4Px;
+    overflow: hidden;
+  }
+
+  .map-icon-wrap {
+    max-height: 60PX;
+
+    .hotel-map-icon {
+      width: 144PX;
+      height: 60PX;
+    }
+  }
+
+  .hotel-facilities-wrap {
+    height: 40Px;
   }
 }
 
-.map-icon-wrap {
-  max-height: 60PX;
-  overflow: hidden;
-
-  .hotel-map-icon {
-    width: 144PX;
-    height: 60PX;
-  }
-}
-
-.hotel-facilities-wrap {
-  height: 40Px;
-}
-
-.collapse-cell--hover {
-  background-color: #f1f1f1;
-}
-
-.collapse-cell--open {
-  background-color: #f1f1f1;
-}
-
-.collapse-cell--disabled {
-  background-color: #f1f1f1;
-}
 
 .collapse-cell--hide {
   height: 160Px;
@@ -60,7 +61,6 @@
 .collapse-cell__content {
   overflow: hidden;
   padding: 0 10Px;
-  background: rgba(244, 244, 244, 1);
 }
 
 .collapse-cell__content--hide {
@@ -74,50 +74,63 @@
 }
 
 .roomFacilities-wrap {
-  display: flex;
-  justify-content: start;
-  align-items: center;
-  flex-wrap: wrap;
 
   .roomFacilities {
     flex: 0 0 33%;
     margin: 0;
-
-    .item{
-      margin: 8Px;
-    }
-
-    .facilities-val{
-      margin-left: 8Px;
-      font-size: 13Px;
-    }
-
-    .cuIcon-area:before {
-      content: "\e630";
-    }
-
-    .cuIcon-floor:before {
-      content: "\e72a";
-    }
-
-    .cuIcon-guests:before {
-      content: "\e7b9";
-    }
-
-    .cuIcon-bed:before {
-      content: "\e605";
-    }
-
-    .cuIcon-window:before {
-      content: "\e6aa";
-    }
-
-    .cuIcon-wifi:before {
-      content: "\e6a9";
-    }
   }
 }
 
 .room-pic {
+  position: relative;
   height: 160Px;
+
+  &:before {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background: rgba(0, 0, 0, .15);
+    z-index: 1;
+  }
+
+  .room-pic-float {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 2;
+    width: 100%;
+    height: 100%;
+
+    .room-pic-price {
+      line-height: 24Px;
+      border-top-left-radius: 12PX;
+      border-bottom-left-radius: 12PX;
+    }
+
+    .float-bottom {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%
+    }
+  }
+}
+
+.reference-price {
+  width: 63PX;
+  height: 20Px;
+  line-height: 20PX;
+  border-radius: 10Px;
+}
+
+.booking-btn {
+  width: 71Px;
+  height: 28Px;
+  line-height: 28Px;
+  background: rgba(255, 169, 64, 1);
+  border-radius: 2Px;
 }

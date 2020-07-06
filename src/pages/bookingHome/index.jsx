@@ -3,8 +3,8 @@ import Taro, { Component } from '@tarojs/taro';
 import { Image, Text, View } from '@tarojs/components';
 import { connect } from '@tarojs/redux';
 import dayJs from 'dayjs';
-import './index.scss';
 import { getDay } from '../../utils/util';
+import './index.scss';
 
 @connect(({hotelModel}) => ({
   params: hotelModel.params
@@ -38,7 +38,7 @@ class BookingHome extends Component {
         <View className='home-banner'>
           <Image lazyLoad src='http://img1.imgtn.bdimg.com/it/u=1809468132,2618176109&fm=26&gp=0.jpg'/>
         </View>
-        <View className='form-wrap bg-white padding-left-lg padding-right-lg padding-bottom-lg'>
+        <View className='form-wrap bg-white padding-lr-lg padding-bottom-lg'>
           <View className='flex justify-between align-center solid-bottom form-item'
                 onClick={() => Taro.navigateTo({url: '/pages/city/index'})}>
             <Text className='text-lg text-bold-5'>{cityName}</Text>

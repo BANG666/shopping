@@ -14,6 +14,7 @@
   width: 90%;
   margin: 0 auto;
   box-shadow: 0 2PX 4PX 0 rgba(234, 234, 234, 1);
+  border-radius: 5Px;
 
   .form-item {
     height: 50Px;
@@ -31,5 +32,6 @@
   .form-btn {
     height: 50Px;
     line-height: 50Px;
+    border-radius: 5Px;
   }
 }

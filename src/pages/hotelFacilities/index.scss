@@ -1,0 +1,45 @@
+.index{
+  padding: 15PX 0;
+}
+.roomFacilities{
+  flex: 0 0 25%;
+  margin: 0;
+}
+
+
+.verticalLine{
+  display: inline-block;
+  width: 4Px;
+  height: 18Px;
+  background: #ffa940;
+}
+
+.leader{
+  position: relative;
+  padding-left: 12PX;
+  &:after{
+    position: absolute;
+    top: 50%;
+    left: 0;
+    content: "";
+    width: 4PX;
+    height: 4PX;
+    background: #000;
+    transform: translateY(-50%);
+    border-radius: 50%;
+  }
+}
+
+
+.payment-item{
+  display: inline-block;
+  .payment-item-pic{
+    width: 50PX;
+    height: 30PX;
+    background-position: center;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    display: inline-block;
+    box-shadow: 0 0 6Px 3Px rgba(0, 0, 0, 0.1);
+  }
+}

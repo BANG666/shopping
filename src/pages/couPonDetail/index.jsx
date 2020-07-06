@@ -85,7 +85,7 @@ class CouponDetail extends Component {
                     : 'text-bold-4' }` }>注意事项</View>
           </View>
           {
-            current === 0 ? (<View className='padding-left-lg padding-right-lg'>
+            current === 0 ? (<View className='padding-lr-lg'>
               <View className='text-line-zh text-base text-bold-5 margin-top-lg margin-bottom-lg'>套餐内容：</View>
               <View className='flex align-start text-line-zh'>
                 <Text className='cuIcon-title text-xs text-gray-8' />
@@ -146,7 +146,7 @@ class CouponDetail extends Component {
             current === 1 ? <View>我是第二页</View> : null
           }
         </View>
-        <View className='padding-left-lg padding-right-lg booking-btn'>
+        <View className='padding-lr-lg booking-btn'>
           <AtButton className='bg-red'
                     onClick={ () => Taro.navigateTo({ url: '/pages/confirmCoupon/index' }) }>立即购买</AtButton>
         </View>

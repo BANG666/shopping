@@ -47,7 +47,7 @@ class HotelList extends Component {
           {/*    <Text>起 每晚</Text>*/}
           {/*  </View>*/}
           {/*</View>*/}
-          <View className='hotel-name-wrap text-white padding-left-lg padding-bottom-lg'>
+          <View className='hotel-name-wrap text-white padding-tb-lg'>
             <View className='hotel-name text-lg text-bold-6 margin-bottom-sm'>上海浦东嘉里大酒店</View>
             <View className='hotel-address text-sm text-bold-5'>中国上海浦东花木路1388号 邮政编码 201204</View>
           </View>

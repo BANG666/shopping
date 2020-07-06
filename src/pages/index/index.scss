@@ -4,7 +4,30 @@
 }
 
 .scrollView {
-  height: 300px;
-  width: 750px;
+  //height: 280Px;
   white-space: nowrap;
+
+  .selling-item {
+    display: inline-block;
+    width: 166Px;
+    box-shadow: 0 4px 20px 0 rgba(231, 232, 233, 1);
+    border-radius: 8Px;
+    overflow: hidden;
+
+    .selling-item-pic {
+      height: 166Px;
+      background: #f9f9f9;
+    }
+
+    .selling-item-info {
+      height: 114PX;
+      background: #fff;
+      .selling-hotel-name{
+        //width: 100Px;
+        white-space: pre-wrap;
+        max-height: 34PX;
+      }
+    }
+  }
 }
+

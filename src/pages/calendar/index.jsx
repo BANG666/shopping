@@ -1,28 +1,27 @@
 import React from 'react';
 import { Component } from '@tarojs/taro';
-import { ScrollView, Text, View } from '@tarojs/components';
+import { ScrollView, View } from '@tarojs/components';
 import dayJs from 'dayjs';
 import isBetween from 'dayjs/plugin/isBetween';
 import { connect } from '@tarojs/redux';
 import _ from 'underscore';
-import './index.scss';
-import { createLogger } from 'redux-logger/src';
 import { UPDATE_PARAMS } from '../../redux/actions/hotel';
 import { dateSpace, getDay } from '../../utils/util';
-import { ViewProps } from '@tarojs/components/types/View';
+import './index.scss';
 
 dayJs.extend(isBetween);
 const MIN_DATE = dayJs().format('YYYY-MM-DD');
 const MAX_DATE = 6;
 
-@connect(({hotelModel}) => ({
-  params: hotelModel.params
+@connect(({ hotelModel }) => ({
+  params: hotelModel.params,
+  notAvailableDates: hotelModel.notAvailableDates
 }))
 class Calendar extends Component {
   constructor(props) {
     super(props);
-    const {params} = props;
-    const {checkInAt, checkOutAt} = params;
+    const { params } = props;
+    const { checkInAt, checkOutAt } = params;
     this.state = {
       maxDate: MAX_DATE, // 可选结束日期，默认6个月后
       minDate: MIN_DATE, // 可选开始日期，默认今天
@@ -55,7 +54,7 @@ class Calendar extends Component {
 
   // 如果有默认日期，滚动到默认日期，没有则滚动到今日
   defaultScroll = () => {
-    const {minSelect, maxSelect} = this.state;
+    const { minSelect, maxSelect } = this.state;
     if (minSelect) {
       this.scrollToMonth(minSelect);
     } else if (maxSelect) {
@@ -68,7 +67,7 @@ class Calendar extends Component {
   // 页面滚动到指定的月份
   scrollToMonth = date => {
     // 获取当前月份在所有列表中的索引
-    const {showMonth} = this.state;
+    const { showMonth } = this.state;
     let index = 0;
     for (let i = 0; i < showMonth.length; i++) {
       if (dayJs(date).isSame(dayJs(showMonth[i].date), 'month')) {
@@ -80,16 +79,11 @@ class Calendar extends Component {
     this.setState({
       scrollIntoViewId: 'calendar_item_' + index
     });
-    // let height = 0;
-    // const query = Taro.createSelectorQuery().in(this.$scope);
-    // query.select('#calendar_item_'+index).boundingClientRect(data => {
-    //   console.log(data.top-130);
-    // }).exec();
   };
 
   // 计算当前月份对应的日历
   setMonthData = props => {
-    const {min, date} = props;
+    const { min, date } = props;
     const items = [];
     // 获取本月第一天是周几
     const startWeek = dayJs(date)
@@ -122,8 +116,7 @@ class Calendar extends Component {
 
   // 根据maxDate 和 minDate 计算显示的月份
   getShowMonth = () => {
-    // 默认显示最近一年
-    const {minDate, maxDate} = this.state;
+    const { minDate, maxDate } = this.state;
     const minMonth = dayJs(minDate).month();
     const monthArr = [];
     for (let i = minMonth; i < maxDate + minMonth; i++) {
@@ -160,10 +153,18 @@ class Calendar extends Component {
   };
 
   selectDate = date => {
-    const {showMonth, minDate, minSelect, maxSelect} = this.state;
+    const { showMonth, minDate, minSelect, maxSelect } = this.state;
+    const { notAvailableDates } = this.props;
     if (minSelect && maxSelect) {
       this.setMinSelectDate(date, showMonth, minDate);
     } else if (minSelect && !maxSelect) {
+      const dateNum = dateSpace(minSelect, date);
+      for (let i = 1; i < dateNum; i++) {
+        if (_.contains(notAvailableDates, dayJs(minSelect).add(i, 'd').format('YYYY-MM-DD'))) {
+          this.setMinSelectDate(date, showMonth, minDate);
+          return false;
+        }
+      }
       if (dayJs(date).isBefore(minSelect) || dayJs(date).isSame(dayJs(minSelect), 'd')) {
         this.setMinSelectDate(date, showMonth, minDate);
       } else {
@@ -200,10 +201,8 @@ class Calendar extends Component {
   };
 
   render() {
-    const {showMonth, minSelect, maxSelect, scrollIntoViewId} = this.state;
-    const {params} = this.props;
-    const {checkInAt, checkOutAt} = params;
-    const buke = ['2020-07-05', '2020-07-06', '2020-07-07', '2020-07-10'];
+    const { showMonth, minSelect, maxSelect, scrollIntoViewId } = this.state;
+    const { notAvailableDates } = this.props;
     return (
       <View className='index'>
         <View className='pageTopLine'/>
@@ -249,19 +248,19 @@ class Calendar extends Component {
                     scrollWithAnimation>
           {
             showMonth.map((item, index) => {
-              const {list = [], date: titleDate} = item;
+              const { list = [], date: titleDate } = item;
               return (
                 <View key={index} id={'calendar_item_' + index}>
                   <View className='text-bold calendar-title'>{titleDate}</View>
                   <View className='flex flex-wrap align-center text-center'>
                     {
                       list.map(dateItem => {
-                        const {text, date: subDate, disabled} = dateItem;
+                        const { text, date: subDate, disabled } = dateItem;
                         let week = dayJs(subDate).day();
                         const isWeekDay = week === 0 || week === 6;
                         const isCheckInDay = dayJs(subDate).isSame(dayJs(minSelect), 'd');
                         const isCheckOutDay = dayJs(subDate).isSame(dayJs(maxSelect), 'd');
-                        const notAvailable = _.find(buke, el => dayJs(subDate).isSame(dayJs(el), 'd'));
+                        const notAvailable = _.find(notAvailableDates, el => dayJs(subDate).isSame(dayJs(el), 'd'));
                         const isSelected = dayJs(subDate).isBetween(dayJs(minSelect), dayJs(maxSelect)) || dayJs(subDate).isSame(dayJs(minSelect), 'd') || dayJs(subDate).isSame(dayJs(maxSelect), 'd');
                         return (
                           <View
