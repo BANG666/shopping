@@ -3,13 +3,16 @@ import { Image, ScrollView, Swiper, SwiperItem, Text, View } from '@tarojs/compo
 import { AtSearchBar } from 'taro-ui';
 import './index.scss';
 import React from 'react';
+import { getHomeVoucherList } from '../../servers/servers';
+import handleError from '../../utils/handleError';
 
 
 class Index extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      value: ''
+      keyword: '',
+      list: []
     };
   }
 
@@ -19,6 +22,10 @@ class Index extends Component {
 
   componentWillReceiveProps(nextProps) {
     // console.log(this.props, nextProps);
+  }
+
+  componentDidMount() {
+    this.getVoucherList();
   }
 
   componentWillUnmount() {
@@ -35,7 +42,7 @@ class Index extends Component {
 
   onChange = val => {
     this.setState({
-      value: val
+      keyword: val
     });
   };
 
@@ -43,12 +50,27 @@ class Index extends Component {
     console.log(e.detail);
   };
 
+  getVoucherList = () => {
+    getHomeVoucherList({}).then(res => {
+      const { data, code } = res;
+      const { isLogin = false, message = '' } = handleError(res);
+      if (!message) {
+        this.setState({
+          list: [...data, ...data]
+        })
+      }
+    }).catch(err => {
+
+    });
+  };
+
   render() {
+    const { keyword, list } = this.state;
     return (
       <View className='index'>
         <View className='pageTopLine'/>
         <AtSearchBar
-          value={this.state.value}
+          value={keyword}
           onChange={this.onChange}
         />
         <View className='margin-lg'>
@@ -83,27 +105,30 @@ class Index extends Component {
         <View className='padding-top-lg margin-bottom-lg'>
           <View className='text-base text-bold margin-bottom-md padding-lr-lg'>热卖中</View>
           <ScrollView
-            className='scrollView'
+            className='scrollView padding-left-lg'
             scrollX
             scrollWithAnimation
             onScroll={this.onScroll}
           >
             {
-              [1,2,3,4,5].map(item => {
+              list.map(item => {
                 return (
-                  <View key={item} className={`margin-right-lg selling-item ${item === 1 ? 'margin-left-lg' : ''}`}>
-                    <View className='selling-item-pic'/>
+                  <View key={item._id} className={`margin-right-lg selling-item ${item === 1 ? 'margin-left-lg' : ''}`}
+                        onClick={() => {
+                          Taro.navigateTo({ url: `/pages/couPonDetail/index?id=${item._id}` })
+                        }}>
+                    <View className='selling-item-pic'>
+                      <Image src={item.image}/>
+                    </View>
                     <View
                       className='text-sm selling-item-info padding-lr-md padding-tb-lg'>
-                      <View className='text-red text-line-zh text-cut margin-bottom-md'>秒杀进行中 倒计时8小时</View>
+                      <View className='text-red text-line-zh text-cut margin-bottom-md'>{item.name}</View>
                       <Text className='text-line-zh text-cut-twice selling-hotel-name margin-bottom-md'>
-                        {
-                          item === 3 ? '宁波柏悦酒店' : '宁波柏悦酒店 ｜ 3天2晚打卡东钱湖畔中国首 宁波柏悦酒店 ｜ 3天2晚打卡东钱湖畔中国首 宁波柏悦酒店 ｜ 3天2晚打卡东钱湖畔中国首'
-                        }
+                        {item.description}
                       </Text>
                       <View className='text-red text-line-zh text-bold-5'>
                         <Text>￥</Text>
-                        <Text className='text-base'>1888</Text>
+                        <Text className='text-base'>{item.price}</Text>
                       </View>
                     </View>
                   </View>
@@ -114,10 +139,22 @@ class Index extends Component {
         </View>
         <View className='padding-top-lg'>
           <View className='text-base text-bold margin-bottom-md padding-lr-lg'>今日特价</View>
-          <View className='margin-lg' style={{height: '150px', background: '#f1f1f1'}}>1</View>
-          <View className='margin-lg' style={{height: '150px', background: '#f1f1f1'}}>2</View>
-          <View className='margin-lg' style={{height: '150px', background: '#f1f1f1'}}>3</View>
-          <View className='margin-lg' style={{height: '150px', background: '#f1f1f1'}}>4</View>
+          <View className='special-list'>
+            {
+              list.map(item => {
+                return (
+                  <View key={item._id} className='margin-lg special-item' onClick={() => {
+                    Taro.navigateTo({ url: `/pages/couPonDetail/index?id=${item._id}` })
+                  }}>
+                    <Image src={item.image}/>
+                    {/*<View className='special-item-info padding-md text-white'>*/}
+                    {/*  {item.name}*/}
+                    {/*</View>*/}
+                  </View>
+                )
+              })
+            }
+          </View>
         </View>
       </View>
     );

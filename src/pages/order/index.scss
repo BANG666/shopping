@@ -1,0 +1,39 @@
+.index {
+  min-height: 100vh;
+  background: rgba(245, 246, 247, 1);
+}
+
+.at-tabs {
+  padding-top: 43Px;
+}
+
+.at-tabs__header {
+  position: fixed;
+  top: 0;
+  z-index: 1;
+
+}
+
+.at-activity-indicator {
+  justify-content: center;
+}
+
+.order-item {
+  border-radius: 5PX;
+  box-shadow: 0 2Px 8Px 0 rgba(238, 239, 240, 1);
+
+  .hotel-pic {
+    width: 80Px;
+    height: 80PX;
+    border-radius: 5PX;
+    overflow: hidden;
+  }
+
+  .at-button {
+    border-color: rgba(232, 232, 232, 1);
+  }
+
+  .at-divider {
+    height: 40Px;
+  }
+}

@@ -1,23 +1,26 @@
-.index{
+.index {
   padding: 15PX 0;
 }
-.roomFacilities{
+
+.roomFacilities {
   flex: 0 0 25%;
   margin: 0;
+  overflow: hidden;
 }
 
 
-.verticalLine{
+.verticalLine {
   display: inline-block;
   width: 4Px;
   height: 18Px;
   background: #ffa940;
 }
 
-.leader{
+.leader {
   position: relative;
   padding-left: 12PX;
-  &:after{
+
+  &:after {
     position: absolute;
     top: 50%;
     left: 0;
@@ -31,9 +34,10 @@
 }
 
 
-.payment-item{
+.payment-item {
   display: inline-block;
-  .payment-item-pic{
+
+  .payment-item-pic {
     width: 50PX;
     height: 30PX;
     background-position: center;

@@ -1,0 +1,25 @@
+.index {
+  position: relative;
+  min-height: 100vh;
+  background: rgba(246, 247, 248, 1);
+}
+
+.main-wrap{
+  position: absolute;
+  top: 10%;
+  left: 0;
+  width: 100%;
+}
+
+.logo-wrap{
+  margin-bottom: 30PX;
+}
+
+.logo {
+  width: 64Px;
+  height: 25PX;
+}
+
+.phone-btn{
+  width: 94%;
+}

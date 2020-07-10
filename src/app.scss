@@ -58,6 +58,10 @@
   color: #888888;
 }
 
+.text-gray-9 {
+  color: #999;
+}
+
 .text-gray-d9 {
   color: #D9D9D9;
 }
@@ -384,6 +388,11 @@
   color: #000;
 }
 
+.cells-grid{
+  display: grid;
+  grid-template-columns: 25% 25% 25% 25% 25% 25%;
+}
+
 .flex {
   display: flex;
 }
@@ -531,4 +540,62 @@ image {
   height: 1px;
   width: 100%;
   box-shadow: 0 0.5PX 0.5PX 0 rgba(0, 0, 0, 0.1);
+}
+
+.empty_list {
+  width: 150PX;
+  margin: 0 auto;
+
+  .pic {
+    height: 80PX;
+  }
+}
+
+.coupon-item {
+  position: relative;
+  border-radius: 5Px;
+  overflow: hidden;
+  background-image: url("./assets/image/coupon_bg.png");
+  box-shadow: 0 2Px 8Px 0 rgba(238, 239, 240, 1);
+  background-repeat: no-repeat;
+  background-size: 100%;
+
+  .coupon-pic {
+    width: 80Px;
+    height: 80PX;
+    border-radius: 5PX;
+    overflow: hidden;
+  }
+
+  .coupon-info {
+    width: 80Px;
+    height: 80Px;
+    background: linear-gradient(180deg, rgba(234, 202, 135, 1) 0%, rgba(217, 175, 109, 1) 100%);
+    border-radius: 5PX;
+    overflow: hidden;
+  }
+
+  .coupon-use {
+    display: inline-block;
+    width: 56Px;
+    height: 16Px;
+    color: #D2B78A;
+    background: rgba(255, 255, 255, 1);
+    border-radius: 10Px;
+  }
+
+  .used {
+    width: 96PX;
+    height: 96PX;
+    background: rgba(216, 216, 216, 1);
+  }
+
+  .used-icon {
+    position: absolute;
+    top: 50%;
+    right: 80Px;
+    height: 50Px;
+    width: 50PX;
+    margin-top: -25PX;
+  }
 }

@@ -54,6 +54,27 @@ export const getDay = num => {
   return `星期${str}`;
 };
 
+// 获取今天，明天，后天
+export const getToDayAndAfterDay = date => {
+  const day1 = dayJs().startOf('day');
+  const day2 = dayJs()
+    .add(1, 'd')
+    .startOf('day');
+  const day3 = dayJs()
+    .add(2, 'd')
+    .startOf('day');
+  if (dayJs(date).isSame(day1, 'd')) {
+    return '今天';
+  }
+  if (dayJs(date).isSame(day2, 'd')) {
+    return '明天';
+  }
+  if (dayJs(date).isSame(day3, 'd')) {
+    return '后天';
+  }
+  return '';
+};
+
 export const formatRoomBed = code => _.find(roomBedType, el => el.code === code) || {};
 
 export const formatRoomWindow = key => {

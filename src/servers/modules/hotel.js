@@ -1,19 +1,33 @@
 import HTTP from '../http';
 
-export function getHotelList () {
+export function getHotelList({ data = {}, paginate = {} }) {
   return HTTP.post({
-    url: '/hotels/v4/search',
-    data: {
-      agreementUser: '5e8c51a794c4b300112bb6c7',
-      checkInAt: '2020-07-01T16:00:00.000Z',
-      checkOutAt: '2020-07-02T16:00:00.000Z',
-      city: '310100',
-      guestCount: 1,
-      roomCount: 1
-    },
-    paginate: {
-      pageNum: 1,
-      pageLimit: 10
-    }
+    url: '/voucher-reservations/booking/hotels',
+    data: data,
+    paginate: paginate
   });
+}
+
+export function getHotelRoomType(data) {
+  return HTTP.get(`/voucher-reservations/booking/hotels/${data}`)
+}
+
+export function createHotelOrder({ data = {} }) {
+  return HTTP.post({
+    url: '/voucher-reservations',
+    data: data
+  })
+}
+
+export function getReservation({ data = {}, paginate = {} }) {
+  const params = {
+    conds: { customer: data.conds.customer }
+  };
+  if (data.conds.status != null) {
+    params.conds.status = data.conds.status;
+  }
+  return HTTP.post({
+    url: '/voucher-reservations/list',
+    data: data
+  })
 }

@@ -24,19 +24,22 @@ class App extends Component {
 
   config = {
     pages: [
+      'pages/login/index',
       'pages/index/index',
-      'pages/userInfo/index',
+      'pages/order/index',
       'pages/coupon/index',
+      'pages/userInfo/index',
       'pages/bookingHome/index',
       'pages/hotelList/index',
       'pages/hotelDetail/index',
       'pages/booking/index',
+      'pages/selectCoupon/index',
+      'pages/bookingSuccess/index',
       'pages/hotelFacilities/index',
       'pages/hotelPhoto/index',
       'pages/couPonDetail/index',
       'pages/confirmCoupon/index',
       'pages/city/index',
-      'pages/login/index',
       'pages/calendar/index'
     ],
     window: {
@@ -45,9 +48,18 @@ class App extends Component {
       navigationBarTitleText: 'WeChat',
       navigationBarTextStyle: 'black'
     },
+    // globalStyle: {
+    //   navigationBarTitleText: '房券商城',
+    //   navigationBarTextStyle: 'black',
+    //   navigationBarBackgroundColor: '#ffffff',
+    //   backgroundColor: '#ffffff',
+    //   'app-plus': {
+    //     bounce: 'none'
+    //   }
+    // },
     tabBar: {
       color: '#aaaaaa',
-      selectedColor: '#BB9D4B',
+      selectedColor: '#ffa940',
       borderStyle: 'black',
       backgroundColor: '#ffffff',
       list: [
@@ -59,65 +71,55 @@ class App extends Component {
         },
         {
           pagePath: 'pages/coupon/index',
-          iconPath: 'assets/image/tabbar/home.png',
-          selectedIconPath: 'assets/image/tabbar/home_select.png',
-          text: '我的券'
+          iconPath: 'assets/image/tabbar/order.png',
+          selectedIconPath: 'assets/image/tabbar/order_select.png',
+          text: '订单'
+        },
+        {
+          pagePath: 'pages/order/index',
+          iconPath: 'assets/image/tabbar/my_order.png',
+          selectedIconPath: 'assets/image/tabbar/my_order_select.png',
+          text: '我的预订'
         },
         {
           pagePath: 'pages/userInfo/index',
           iconPath: 'assets/image/tabbar/mine.png',
           selectedIconPath: 'assets/image/tabbar/mine_select.png',
           text: '我的'
-        },
+        }
       ]
     },
     permission: {
       'scope.userLocation': {
         desc: '你的位置信息将用于小程序位置接口的效果展示'
       }
+      // 'scope.userInfo': {
+      //   desc: '你的手机号将用于账号绑定'
+      // }
     }
   };
 
-  componentDidMount () {
+  componentDidMount() {
   }
 
-  componentDidShow () {
-    const token = Taro.getStorageSync('token');
-    if ( token ) {
-      this.getUserInfo();
-    }
+  componentDidShow() {
   }
 
-  componentDidHide () {
+  componentDidHide() {
   }
 
-  componentDidCatchError () {
+  componentDidCatchError() {
   }
-
-  getUserInfo = () => {
-    getUserInfo().then(res => {
-      const { data, code } = res;
-      if ( code === 0 ) {
-        Taro.setStorageSync('userInfo', data);
-        store.dispatch({
-          type: UPDATE_USER,
-          payload: { user: data }
-        });
-      }
-    }).catch(err => {
-
-    });
-  };
 
   // 在 App 类中的 render() 函数没有实际作用
   // 请勿修改此函数
-  render () {
+  render() {
     return (
-      <Provider store={ store }>
-        <Index />
+      <Provider store={store}>
+        <Index/>
       </Provider>
     );
   }
 }
 
-Taro.render(<App />, document.getElementById('app'));
+Taro.render(<App/>, document.getElementById('app'));

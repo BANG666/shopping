@@ -2,9 +2,10 @@ import initSate from './initState';
 import { UPDATE_USER } from '../../actions/user';
 
 const userModel = (state = initSate, { type, payload }) => {
-  switch ( type ) {
+  const { user } = state;
+  switch (type) {
     case UPDATE_USER:
-      return { ...state, ...payload };
+      return { ...state, user: { ...user, ...payload } };
     default:
       return state;
   }

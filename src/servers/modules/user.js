@@ -1,12 +1,8 @@
 import HTTP from '../http';
 
-export function fetchLogin (postData) {
+export function authLoading (data) {
   return HTTP.post({
-    url: '/auth/signin',
-    data: postData
+    url: '/auth/wechat-signin',
+    data: data
   });
-}
-
-export function getUserInfo () {
-  return HTTP.get('/auth/users/me')
 }

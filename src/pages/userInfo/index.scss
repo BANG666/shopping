@@ -1,0 +1,119 @@
+.index {
+  position: relative;
+  min-height: 100vh;
+  background: rgba(246, 247, 248, 1);
+  width: 100vw;
+  overflow: hidden;
+}
+
+.index-bg {
+  position: relative;
+  top: 0;
+  left: -25%;
+  height: 244Px;
+  //background: linear-gradient(90deg, rgba(245, 211, 71, 1) 0%, rgba(243, 192, 66, 1) 100%);
+  background: rgba(253, 253, 253, 1);
+  box-shadow: 0 1Px 8Px 0 rgba(223, 225, 225, 1);
+  width: 150%;
+  border-bottom-left-radius: 100%;
+  border-bottom-right-radius: 100%;
+}
+
+.info-wrap {
+  position: absolute;
+  top: 30Px;
+  left: 0;
+  width: 100%;
+  z-index: 1;
+
+  .user-info {
+    padding-left: 30PX;
+
+    .get-user-info-btn {
+      width: 30Px;
+      height: 20PX;
+      line-height: 20PX;
+    }
+  }
+
+  .avatar {
+    width: 54PX;
+    height: 54PX;
+    border-radius: 50%;
+    overflow: hidden;
+    box-shadow: 0 1Px 8Px 0 rgba(223, 225, 225, 1);
+  }
+
+  .unused-voucher {
+    margin-top: 30PX;
+    height: 54PX;
+    //background: linear-gradient(90deg, rgba(14, 14, 14, 1) 0%, rgba(37, 43, 48, 1) 100%);
+    background-image: url('../../assets/image/go_to_use_bg.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100%;
+    box-shadow: 0 4Px 4Px 0 rgba(234, 234, 234, 1);
+    border-radius: 5Px;
+    color: #F1C7A0;
+
+    .goToUse {
+      width: 68Px;
+      height: 22PX;
+      line-height: 22PX;
+      border-radius: 11PX;
+      background: linear-gradient(90deg, rgba(250, 228, 206, 1) 0%, rgba(241, 199, 160, 1) 100%);
+    }
+  }
+}
+
+
+.cells_auto {
+  position: relative;
+  top: -66PX;
+  left: 0;
+  margin-bottom: -66Px;
+  height: 88Px;
+  background: rgba(255, 255, 255, 1);
+  box-shadow: 0 2Px 4Px 0 rgba(234, 234, 234, 1);
+  border-radius: 5px;
+  z-index: 2;
+
+  .cells-icon {
+    width: 28PX;
+    height: 30PX;
+  }
+}
+
+.my-coupon {
+  margin-top: 20PX;
+  padding-top: 20Px;
+  height: 150PX;
+  background: rgba(255, 255, 255, 1);
+  box-shadow: 0 2Px 4Px 0 rgba(234, 234, 234, 1);
+  border-radius: 5Px;
+
+  .cells-icon {
+    width: 28PX;
+    height: 30PX;
+  }
+}
+
+.order-item {
+  border-radius: 5PX;
+  box-shadow: 0 2Px 8Px 0 rgba(238, 239, 240, 1);
+
+  .hotel-pic {
+    width: 80Px;
+    height: 80PX;
+    border-radius: 5PX;
+    overflow: hidden;
+  }
+
+  .at-button {
+    border-color: rgba(232, 232, 232, 1);
+  }
+
+  .at-divider {
+    height: 40Px;
+  }
+}

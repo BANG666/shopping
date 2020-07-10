@@ -5,6 +5,7 @@ import { connect } from '@tarojs/redux';
 import _ from 'underscore';
 import defaultImage from '../../assets/image/hotel-cover.png';
 import './index.scss';
+import empty_list from '../../assets/image/empty.png';
 
 @connect(({ hotelModel }) => ({
   hotelDetail: hotelModel.hotelDetail
@@ -46,30 +47,39 @@ class HotelPhoto extends Component {
     return (
       <View className='index'>
         <View className='pageTopLine'/>
-        <View className='flex justify-between align-center flex-wrap padding-sm'>
-          {
-            list.map((item, index) => {
-              return (
-                <View key={item} className='item-wrap' onClick={() => this.handleImageClick(item)}>
-                  <Image
-                    lazyLoad
-                    onError={(e) => {
-                      this.setState({
-                        list: list.map((el, elIndex) => {
-                          if (elIndex === index) {
-                            return defaultImage;
-                          } else {
-                            return el;
-                          }
-                        })
-                      })
-                    }}
-                    src={defaultImg || item}/>
-                </View>
-              )
-            })
-          }
-        </View>
+        {
+          list.length ? (
+            <View className='flex justify-between align-center flex-wrap padding-sm'>
+              {
+                list.map((item, index) => {
+                  return (
+                    <View key={item} className='item-wrap' onClick={() => this.handleImageClick(item)}>
+                      <Image
+                        lazyLoad
+                        onError={(e) => {
+                          this.setState({
+                            list: list.map((el, elIndex) => {
+                              if (elIndex === index) {
+                                return defaultImage;
+                              } else {
+                                return el;
+                              }
+                            })
+                          })
+                        }}
+                        src={defaultImg || item}/>
+                    </View>
+                  )
+                })
+              }
+            </View>
+          ) : (
+            <View className='empty_list'>
+              <Image className='pic' src={empty_list}/>
+              <View className='text-center text-sm'>暂无图片~</View>
+            </View>
+          )
+        }
       </View>
     );
   }

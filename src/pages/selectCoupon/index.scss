@@ -1,0 +1,23 @@
+.index {
+  padding-bottom: 50PX;
+  min-height: 100vh;
+  background: rgba(245, 246, 247, 1);
+}
+
+
+.coupon-item{
+  border: 1PX solid transparent;
+  &.selected{
+    border: 1PX solid #ffa940;
+  }
+}
+
+.footer-wrap{
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  .btn{
+    line-height: 50PX;
+  }
+}

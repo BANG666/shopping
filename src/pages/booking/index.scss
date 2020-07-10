@@ -1,4 +1,5 @@
 .index {
+  position: relative;
   min-height: 100vh;
   background: #f4f4f4;
 }
@@ -12,6 +13,12 @@
 
     .checkInDate {
       border-bottom: 1Px dashed rgba(0, 0, 0, .3);
+      .roomNight{
+        color: #999;
+        border: 1px solid #999;
+        padding: 0 10PX;
+        border-radius: 18Px;
+      }
     }
   }
 }
@@ -43,8 +50,8 @@
     }
 
     .at-input__title {
-      font-size: 12Px;
-      width: 70Px;
+      font-size: 14Px;
+      width: 90Px;
     }
 
     input {
@@ -54,7 +61,7 @@
 
   .at-list__item {
     padding: 16Px 0;
-    font-size: 12PX;
+    font-size: 14PX;
 
     &:after{
       border-color: #eee;
@@ -84,6 +91,9 @@
 .at-textarea {
   font-size: 12Px;
   border-color: #eee;
+  textarea{
+    height: 130Px;
+  }
 }
 
 .at-textarea__textarea {
@@ -97,4 +107,36 @@
 .remark{
   height: 50PX;
   line-height: 50PX;
+}
+
+.remark-action{
+  height: 30PX;
+  line-height: 30PX;
+}
+
+.at-float-layout__container{
+  min-height: 150PX;
+  max-height: 300Px;
+}
+
+.remark-title{
+  min-width: 70Px;
+  max-width: 70Px;
+}
+
+.remark-text{
+  max-width: calc(100vw - 112PX);
+}
+
+.footer-booking-wrap{
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  .booking-btn{
+    height: 50Px;
+    line-height: 50Px;
+    width: 150Px;
+    border-radius: 0;
+  }
 }

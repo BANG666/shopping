@@ -4,13 +4,12 @@ import { View } from '@tarojs/components';
 import { AtIndexes, AtSearchBar } from 'taro-ui';
 import _ from 'underscore';
 import { connect } from '@tarojs/redux';
-import { cities } from '../../assets/city';
+import { citys as cities, groupingCities } from 'x-city';
 import { UPDATE_PARAMS } from '../../redux/actions/hotel';
 import './index.scss';
-
+const cityList = groupingCities().filter(item => item.items.length > 0);
 
 @connect(({ hotelModel }) => ({
-  cityList: hotelModel.cityList
 }))
 class CitySelect extends Component {
   constructor (props) {
@@ -88,7 +87,6 @@ class CitySelect extends Component {
 
   render () {
     const { keyword, filterCityList, isFocused } = this.state;
-    const { cityList } = this.props;
     return (
       <View className='index'>
         <View className='pageTopLine' />

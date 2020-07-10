@@ -22,12 +22,26 @@
     .selling-item-info {
       height: 114PX;
       background: #fff;
-      .selling-hotel-name{
+
+      .selling-hotel-name {
         //width: 100Px;
         white-space: pre-wrap;
         max-height: 34PX;
       }
     }
+  }
+}
+
+.special-item {
+  position: relative;
+  height: 150Px;
+
+  .special-item-info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: rgba(0, 0, 0, .15);
   }
 }
 

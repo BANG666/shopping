@@ -6,6 +6,9 @@ import dayJs from 'dayjs';
 import { connect } from '@tarojs/redux';
 import { AtMessage } from 'taro-ui';
 import { formatRoomBed, formatRoomWifi, formatRoomWindow } from '../../utils/util';
+import { getHotelRoomType } from '../../servers/servers';
+import { UPDATE_ROOM_TYPE } from '../../redux/actions/hotel';
+import handleError from '../../utils/handleError';
 import './index.scss';
 
 function generateUUID() {
@@ -25,13 +28,7 @@ class HotelDetail extends Component {
     super(props);
     this.state = {
       scrollTop: 0,
-      roomList: [
-        { id: 1, isOpen: false, uid: 'uid-' + generateUUID() },
-        { id: 2, isOpen: false, uid: 'uid-' + generateUUID() },
-        { id: 3, isOpen: false, uid: 'uid-' + generateUUID() },
-        { id: 4, isOpen: false, uid: 'uid-' + generateUUID() },
-        { id: 5, isOpen: false, uid: 'uid-' + generateUUID() }
-      ]
+      roomTypes: []
     };
   }
 
@@ -39,6 +36,11 @@ class HotelDetail extends Component {
   config = {
     navigationBarTitleText: '酒店详情'
   };
+
+  componentDidMount() {
+    const { params } = this.$router;
+    this.getHotelRoomType(params.id)
+  }
 
   componentWillUnmount() {
   };
@@ -56,12 +58,33 @@ class HotelDetail extends Component {
     });
   }
 
+  getHotelRoomType = (id) => {
+    Taro.showLoading({ title: '加载中' });
+    getHotelRoomType(id).then(res => {
+      const { data, code } = res;
+      const { message = '' } = handleError(res);
+      if (!message) {
+        this.setState({
+          roomTypes: _.map(data, item => ({ ...item, isOpen: false, uid: 'uid-' + generateUUID() }))
+        })
+      } else {
+        Taro.showToast({
+          title: message,
+          icon: 'none'
+        });
+      }
+      Taro.hideLoading();
+    }).catch(err => {
+
+    })
+  };
+
   handleRoomItemClick = item => {
     const { isOpen, uid } = item;
-    const { scrollTop, roomList } = this.state;
+    const { scrollTop, roomTypes } = this.state;
     const query = Taro.createSelectorQuery().in(this.$scope);
     this.setState({
-      roomList: _.map(roomList, el => {
+      roomTypes: _.map(roomTypes, el => {
         if (el.id === item.id) {
           return {
             ...el,
@@ -75,7 +98,9 @@ class HotelDetail extends Component {
         }
       })
     });
+    console.log(query.select('#' + uid));
     query.select('#' + uid).boundingClientRect(data => {
+      console.log(data);
       if (!data) return false;
       if (!isOpen) {
         Taro.pageScrollTo({
@@ -85,11 +110,21 @@ class HotelDetail extends Component {
     }).exec();
   };
 
+  handleClickBooking = item => {
+    this.props.dispatch({
+      type: UPDATE_ROOM_TYPE,
+      payload: item
+    });
+    Taro.navigateTo({
+      url: `/pages/booking/index`
+    })
+  };
+
   render() {
-    const { roomList } = this.state;
+    const { roomTypes } = this.state;
     const { params, hotelDetail = {} } = this.props;
     const { checkInAt, checkOutAt, dateNum } = params;
-    const { lng = 121.499428, lat = 31.235754, address, name, openedAt, decoratedAt, introduction, description, contactNumber, _id: hotelId } = hotelDetail;
+    const { lng = 121.499428, lat = 31.235754, address, name, openedAt, decoratedAt, introduction, description, contactNumber } = hotelDetail;
     const checkInStr = dayJs(checkInAt).format('MM') + '月' + dayJs(checkInAt).format('DD') + '日';
     const checkOutStr = dayJs(checkOutAt).format('MM') + '月' + dayJs(checkOutAt).format('DD') + '日';
     return (
@@ -102,7 +137,7 @@ class HotelDetail extends Component {
           })
         }}>
           <Image lazyLoad
-                 src='https://fx-photos.chuxingpay.com/remote/d0445c1afcf836c2dd36bc770cb1877e.jpg?&auth_key=1593678192-48e33d9f83bd4236b2ac9ac296818f6a-0-a867112b94b6a2eb8b2cd62fc7ced19c'/>
+                 src={hotelDetail.cover || 'https://fx-photos.chuxingpay.com/remote/d0445c1afcf836c2dd36bc770cb1877e.jpg?&auth_key=1593678192-48e33d9f83bd4236b2ac9ac296818f6a-0-a867112b94b6a2eb8b2cd62fc7ced19c'}/>
         </View>
         <View className='hotel-float-top padding-lr-lg'>
           <View className='hotel-name-wrap text-black padding-md' onClick={() => {
@@ -162,15 +197,15 @@ class HotelDetail extends Component {
         </View>
         <View className='rooms-list'>
           {
-            roomList.map((item, index) => {
-              const { isOpen, uid } = item;
+            roomTypes.map((item, index) => {
+              const { isOpen, title, photos, uid } = item;
               const roomCharacteristic = [];
               const style = {
                 transform: isOpen ? 'translateY(0)' : 'translateY(-50%)',
                 '-webkit-transform': isOpen ? 'translateY(0)' : 'translateY(-50%)'
               };
               _.forEach(
-                _.pick({ 'area': 100, 'floor': '10', 'maximumOccupancy': 2, bedTypeCode: 'BT12' }, [
+                _.pick(item, [
                   'area',
                   'floor',
                   'maximumOccupancy',
@@ -220,13 +255,14 @@ class HotelDetail extends Component {
                 <View key={index} className={`margin-bottom-lg ${isOpen ? '' : 'collapse-cell--hide'} `}>
                   <View className='room-pic' id={uid} onClick={() => this.handleRoomItemClick(item)}>
                     <Image lazyLoad
-                           src='https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=2778184159,1139093014&fm=26&gp=0.jpg'/>
+                           src={photos[0] || 'https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=2778184159,1139093014&fm=26&gp=0.jpg'}/>
                     <View className='room-pic-float'>
-                      <View className='float-top padding-left-md padding-top-md flex justify-end'>
-                        <View className='room-pic-price bg-main padding-lr-sm'><Text
-                          className='text-sm'>CNY 1,080 </Text><Text className='text-xs'>每晚</Text></View>
-                      </View>
-                      <View className='float-bottom padding-md'><Text className='text-lg text-white'>豪华客房</Text></View>
+                      {/*<View className='float-top padding-left-md padding-top-md flex justify-end'>*/}
+                      {/*  <View className='room-pic-price bg-main padding-lr-sm'><Text*/}
+                      {/*    className='text-sm'>CNY 1,080 </Text><Text className='text-xs'>每晚</Text></View>*/}
+                      {/*</View>*/}
+                      <View className='float-bottom padding-md'><Text
+                        className='text-lg text-white'>{title}</Text></View>
                     </View>
                   </View>
                   <View
@@ -254,12 +290,9 @@ class HotelDetail extends Component {
                         <View className='flex justify-between align-center margin-top-sm'>
                           <View className='reference-price bg-main text-center text-sm'>参考价</View>
                           <View className='rate-price text-right'>
-                            <View className='text-main'>CNY 980</View>
-                            <View className='booking-btn bg-main text-center margin-top-sm' onClick={() => {
-                              Taro.navigateTo({
-                                url: `/pages/booking/index?id=${hotelId}`
-                              })
-                            }}>预 订</View>
+                            {/*<View className='text-main'>CNY 980</View>*/}
+                            <View className='booking-btn bg-main text-center margin-top-sm'
+                                  onClick={() => this.handleClickBooking(item)}>预 订</View>
                           </View>
                         </View>
                       </View>
@@ -269,9 +302,7 @@ class HotelDetail extends Component {
               );
             })
           }
-
         </View>
-
         {
           introduction || description ? (
             <View className='bg-white margin-lg padding-md'>
@@ -282,7 +313,6 @@ class HotelDetail extends Component {
             </View>
           ) : null
         }
-
         <View className='flex justify-between align-center text-center margin-lr-lg bg-white'>
           <View className='flex-sub padding-tb-lg' onClick={() => {
             if (contactNumber) {
