@@ -115,13 +115,14 @@
       position: absolute;
       bottom: 0;
       left: 0;
-      width: 100%
+      width: 100%;
+      //background: rgba(0, 0, 0, .15);
     }
   }
 }
 
 .reference-price {
-  width: 63PX;
+  width: 70PX;
   height: 20Px;
   line-height: 20PX;
   border-radius: 10Px;
@@ -132,5 +133,5 @@
   height: 28Px;
   line-height: 28Px;
   background: rgba(255, 169, 64, 1);
-  border-radius: 2Px;
+  border-radius: 4Px;
 }

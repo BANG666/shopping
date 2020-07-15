@@ -1,3 +1,4 @@
+import Taro from '@tarojs/taro';
 const customMessage = {
   '-1': '服务器异常，建议稍后再试',
   '40000': '会话过期',
@@ -37,6 +38,9 @@ const handleError = response => {
   const codeStr = code.toString();
   if ( response && customMessage[ codeStr ] ) {
     if ( codeStr === '40000' || codeStr === '40001' ) {
+      Taro.reLaunch({
+        url: '/pages/login/index'
+      });
       return {
         isLogin: true,
         message: message

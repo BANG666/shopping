@@ -1,5 +1,5 @@
 import React from 'react';
-import { Component } from '@tarojs/taro';
+import Taro, { Component } from '@tarojs/taro';
 import { ScrollView, View } from '@tarojs/components';
 import dayJs from 'dayjs';
 import isBetween from 'dayjs/plugin/isBetween';
@@ -10,7 +10,7 @@ import { dateSpace, getDay } from '../../utils/util';
 import './index.scss';
 
 dayJs.extend(isBetween);
-const MIN_DATE = dayJs().format('YYYY-MM-DD');
+const MIN_DATE = dayJs().add(2, 'd').format('YYYY-MM-DD');
 const MAX_DATE = 6;
 
 @connect(({ hotelModel }) => ({

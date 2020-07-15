@@ -46,6 +46,10 @@
   color: #E74D55;
 }
 
+.text-green {
+  color: rgb(149, 222, 100);
+}
+
 .text-white {
   color: #fff;
 }
@@ -545,6 +549,7 @@ image {
 .empty_list {
   width: 150PX;
   margin: 0 auto;
+  padding-top: 30PX;
 
   .pic {
     height: 80PX;

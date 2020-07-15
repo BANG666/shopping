@@ -3,14 +3,14 @@ import Taro, { Component } from '@tarojs/taro';
 import { Image, View } from '@tarojs/components';
 import { connect } from '@tarojs/redux';
 import { AtButton, AtMessage } from 'taro-ui';
-import { fetchLogin } from '../../servers/servers';
-import { UPDATE_USER } from '../../redux/actions/user';
 import handleError from '../../utils/handleError';
-import { authLoading } from '../../servers/modules/user';
+import { bindPhone } from '../../servers/servers';
 import logo from '../../assets/image/logo.png';
 import './index.scss';
 
-@connect(({ userModel }) => ({}))
+@connect(({ userModel }) => ({
+  user: userModel.user
+}))
 class Login extends Component {
   constructor(props) {
     super(props);
@@ -25,35 +25,42 @@ class Login extends Component {
   };
 
   componentDidMount() {
-    Taro.login({
-      success: (info) => {
-        authLoading({ jscode: info.code }).then(res => {
-          const { data, code } = res;
-          const { isLogin = false, message = '' } = handleError(res);
-          if (!message) {
-            this.props.dispatch({
-              type: UPDATE_USER,
-              payload: data
-            });
-          }
-        }).catch(err => {
-          console.log(err, 'err');
-        });
-      }
-    })
   }
 
   componentDidShow() {
+    const { user } = this.props;
+    const info = Taro.getStorageSync('info') || {};
+    if(user.mobileNum || info.mobileNum){
+      Taro.reLaunch({
+        url: '/pages/index/index'
+      })
+    }
   };
 
   componentDidHide() {
   };
 
-  bindGetPhone = val => {
-    console.log(val, 111);
-    Taro.switchTab({
-      url: '/pages/index/index'
-    })
+  bindGetPhone = e => {
+    const { user, dispatch } = this.props;
+    const { detail } = e;
+    if (detail.errMsg === 'getPhoneNumber:ok') {
+      bindPhone({ openid: user.openid, encryptedData: detail.encryptedData, iv: detail.iv }).then(res => {
+        const { data, code } = res;
+        const { message = '' } = handleError(res);
+        if (!message) {
+          Taro.switchTab({
+            url: '/pages/index/index'
+          })
+        } else {
+          Taro.showToast({
+            title: message,
+            icon: 'none'
+          })
+        }
+      }).catch(err => {
+
+      });
+    }
   };
 
   render() {
@@ -66,7 +73,7 @@ class Login extends Component {
             <View className='logo'>
               <Image src={logo}/>
             </View>
-            <View className='margin-top-lg'>文本内容文本内容文本内容</View>
+            <View className='margin-top-lg'>特惠酒店套餐</View>
           </View>
           <View className='phone-btn margin-lg'>
             <AtButton openType="getPhoneNumber" type='primary' onGetPhoneNumber={this.bindGetPhone}>绑定手机号</AtButton>

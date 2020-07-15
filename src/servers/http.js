@@ -8,9 +8,10 @@ interceptors.forEach(i => Taro.addInterceptor(i));
 class httpRequest {
   baseOptions (params, method = 'GET') {
     let { url, data, contentType = 'application/json', paginate = {} } = params;
-    const BASE_URL = getBaseUrl(url);
+    const BASE_URL = getBaseUrl();
     const header = {
       'content-type': contentType,
+      'oss-process': 'image/quality,q_70',
       'Authorization': 'Bearer ' + Taro.getStorageSync('token')
     };
     if ( !_.isEmpty(paginate) ) {

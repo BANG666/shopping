@@ -1,11 +1,10 @@
 import React from 'react';
 import Taro, { Component } from '@tarojs/taro';
 import { Provider } from '@tarojs/redux';
-
 import Index from './pages/index';
-
 import configStore from './redux/store';
-import { getUserInfo } from './servers/servers';
+import { authLoading } from './servers/servers';
+import handleError from './utils/handleError';
 import { UPDATE_USER } from './redux/actions/user';
 import './style/custom-theme.scss';
 import './style/animation.css';
@@ -26,22 +25,37 @@ class App extends Component {
     pages: [
       'pages/login/index',
       'pages/index/index',
-      'pages/order/index',
+      'pages/bookingOrder/index',
       'pages/coupon/index',
       'pages/userInfo/index',
-      'pages/bookingHome/index',
-      'pages/hotelList/index',
-      'pages/hotelDetail/index',
-      'pages/booking/index',
-      'pages/selectCoupon/index',
-      'pages/bookingSuccess/index',
-      'pages/hotelFacilities/index',
-      'pages/hotelPhoto/index',
       'pages/couPonDetail/index',
       'pages/confirmCoupon/index',
-      'pages/city/index',
-      'pages/calendar/index'
+      'pages/order/index',
+      'pages/order/payment'
     ],
+    subPackages: [
+      {
+        root: 'hotelPages',
+        pages: [
+          'city/index',
+          'calendar/index',
+          'bookingHome/index',
+          'hotelList/index',
+          'hotelDetail/index',
+          'booking/index',
+          'selectCoupon/index',
+          'bookingSuccess/index',
+          'hotelFacilities/index',
+          'hotelPhoto/index'
+        ]
+      }
+    ],
+    preloadRule: {
+      'pages/index/index': {
+        'network': 'all',
+        'packages': ['hotelPages']
+      }
+    },
     window: {
       backgroundTextStyle: 'light',
       navigationBarBackgroundColor: '#fff',
@@ -76,7 +90,7 @@ class App extends Component {
           text: '订单'
         },
         {
-          pagePath: 'pages/order/index',
+          pagePath: 'pages/bookingOrder/index',
           iconPath: 'assets/image/tabbar/my_order.png',
           selectedIconPath: 'assets/image/tabbar/my_order_select.png',
           text: '我的预订'
@@ -100,6 +114,7 @@ class App extends Component {
   };
 
   componentDidMount() {
+    this.login();
   }
 
   componentDidShow() {
@@ -110,6 +125,27 @@ class App extends Component {
 
   componentDidCatchError() {
   }
+
+  login = () => {
+    Taro.login({
+      success: (info) => {
+        authLoading({ jscode: info.code }).then(res => {
+          const { data, code } = res;
+          const { isLogin = false, message = '' } = handleError(res);
+          Taro.setStorageSync('token', data.token);
+          Taro.setStorageSync('info', data);
+          if (!message) {
+            store.dispatch({
+              type: UPDATE_USER,
+              payload: data
+            });
+          }
+        }).catch(err => {
+          console.log(err, 'err');
+        });
+      }
+    })
+  };
 
   // 在 App 类中的 render() 函数没有实际作用
   // 请勿修改此函数

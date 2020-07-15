@@ -6,3 +6,11 @@ export function authLoading (data) {
     data: data
   });
 }
+
+
+export function bindPhone (data) {
+  return HTTP.post({
+    url: '/auth/phone-bind',
+    data: data
+  })
+}

@@ -39,7 +39,7 @@ class BookingHome extends Component {
         roomCount: this.state.roomCount
       }
     });
-    Taro.navigateTo({ url: '/pages/hotelList/index' })
+    Taro.navigateTo({ url: '/hotelPages/hotelList/index' })
   };
 
   render() {
@@ -50,16 +50,16 @@ class BookingHome extends Component {
       <View className='index'>
         <View className='pageTopLine'/>
         <View className='home-banner'>
-          <Image lazyLoad src='http://img1.imgtn.bdimg.com/it/u=1809468132,2618176109&fm=26&gp=0.jpg'/>
+          <Image mode='aspectFill' lazyLoad src='http://img1.imgtn.bdimg.com/it/u=1809468132,2618176109&fm=26&gp=0.jpg'/>
         </View>
         <View className='form-wrap bg-white padding-lr-lg padding-bottom-lg'>
           <View className='flex justify-between align-center solid-bottom form-item'
-                onClick={() => Taro.navigateTo({ url: '/pages/city/index' })}>
+                onClick={() => Taro.navigateTo({ url: '/hotelPages/city/index' })}>
             <Text className='text-lg text-bold-5'>{cityName}</Text>
             <Text className='cuIcon-right text-gray-d9'/>
           </View>
           <View className='flex justify-between align-center solid-bottom form-item'
-                onClick={() => Taro.navigateTo({ url: '/pages/calendar/index' })}>
+                onClick={() => Taro.navigateTo({ url: '/hotelPages/calendar/index' })}>
             <View className='flex align-center'>
               <View className='text-ml'>{dayJs(checkInAt).format('DD')}</View>
               <View className='margin-left-md'>
@@ -86,9 +86,9 @@ class BookingHome extends Component {
               <Text className='text-ml'>{roomCount}</Text>
               <Text className='text-base'>间</Text>
             </View>
-            <Text className={`cuIcon-plus text-xl ${roomCount < 5 ? 'text-main' : ''}`}
+            <Text className={`cuIcon-plus text-xl ${roomCount < 10 ? 'text-main' : ''}`}
                   onClick={() => {
-                    if (roomCount < 5) {
+                    if (roomCount < 10) {
                       this.setState({ roomCount: roomCount + 1 })
                     }
                   }}/>

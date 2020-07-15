@@ -19,14 +19,23 @@ export function createVoucherOrders(data) {
 }
 
 export function getVoucherOrderList(data) {
-  console.log(data);
   return HTTP.post({
     url: `/vouchers/list`,
-    data: data
+    data: data,
+    paginate: {
+      pageLimit: 1000
+    }
   })
 }
 
 export function voucherUpdate(data){
   return HTTP.put('/voucher-orders',data);
+}
+
+export function payment(data){
+  return HTTP.post({
+    url: `/payvoucherorder/${data.id}/pay`,
+    data: data
+  })
 }
 

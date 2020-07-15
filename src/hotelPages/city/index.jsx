@@ -1,18 +1,18 @@
 import React from 'react';
-import { Component } from '@tarojs/taro';
+import Taro, { Component } from '@tarojs/taro';
 import { View } from '@tarojs/components';
 import { AtIndexes, AtSearchBar } from 'taro-ui';
 import _ from 'underscore';
 import { connect } from '@tarojs/redux';
-import { citys as cities, groupingCities } from 'x-city';
 import { UPDATE_PARAMS } from '../../redux/actions/hotel';
+import { cities } from '../../utils/util';
 import './index.scss';
-const cityList = groupingCities().filter(item => item.items.length > 0);
 
 @connect(({ hotelModel }) => ({
+  cityList: hotelModel.cityList
 }))
 class CitySelect extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.state = {
       keyword: '',
@@ -26,16 +26,16 @@ class CitySelect extends Component {
     navigationBarTitleText: '选择城市'
   };
 
-  componentDidMount () {
+  componentDidMount() {
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
   };
 
-  componentDidShow () {
+  componentDidShow() {
   };
 
-  componentDidHide () {
+  componentDidHide() {
   };
 
   handleCityClick = item => {
@@ -62,13 +62,11 @@ class CitySelect extends Component {
   };
 
   handleInputChange = val => {
-    if ( val.length ) {
+    if (val.length) {
       this.setState({
         filterCityList: _.map(_.filter(cities, el => el.name.indexOf(val) !== -1), el => ({
           ...el,
-          name1: el.name,
-          typecode: 'fx0000',
-          isSearchCity: true
+          name1: el.name
         }))
       });
     }
@@ -85,19 +83,20 @@ class CitySelect extends Component {
     });
   };
 
-  render () {
+  render() {
     const { keyword, filterCityList, isFocused } = this.state;
+    const { cityList } = this.props;
     return (
       <View className='index'>
-        <View className='pageTopLine' />
+        <View className='pageTopLine'/>
         <AtSearchBar
           fixed
-          value={ keyword }
-          onChange={ this.handleInputChange }
-          onClear={ this.handleInputClear }
-          onBlur={ this.handleInputBlur }
-          onFocus={ this.handleInputFocus }
-          onActionClick={ this.handleInputBlur }
+          value={keyword}
+          onChange={this.handleInputChange}
+          onClear={this.handleInputClear}
+          onBlur={this.handleInputBlur}
+          onFocus={this.handleInputFocus}
+          onActionClick={this.handleInputBlur}
           actionName='取消'
           placeholder='输入城市名搜索'
         />
@@ -105,8 +104,8 @@ class CitySelect extends Component {
           {
             !_.isEmpty(cityList) ? (
               <AtIndexes
-                list={ cityList }
-                onClick={ this.handleCityClick }
+                list={cityList}
+                onClick={this.handleCityClick}
               >
               </AtIndexes>
             ) : null
@@ -118,11 +117,11 @@ class CitySelect extends Component {
               {
                 filterCityList.map(item => {
                   return (
-                    <View key={ item.id } className='padding-lg bg-white' onClick={ e => {
+                    <View key={item.id} className='padding-lg bg-white' onClick={e => {
                       e.preventDefault();
                       e.stopPropagation();
                       this.handleCityClick(item);
-                    } }>{ item.name }</View>
+                    }}>{item.name}</View>
                   );
                 })
               }

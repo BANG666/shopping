@@ -28,6 +28,7 @@ export function getReservation({ data = {}, paginate = {} }) {
   }
   return HTTP.post({
     url: '/voucher-reservations/list',
-    data: data
+    data: data,
+    // paginate
   })
 }

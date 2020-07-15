@@ -1,12 +1,12 @@
 import React from 'react';
-import { Component } from '@tarojs/taro';
+import Taro, { Component } from '@tarojs/taro';
 import { Image, Text, View } from '@tarojs/components';
 import { connect } from '@tarojs/redux';
 import WhiteSpace from '../../components/WhiteSpace';
-
-import './index.scss';
-import { createVoucherOrders, voucherUpdate } from '../../servers/servers';
+import { createVoucherOrders, payment } from '../../servers/servers';
 import handleError from '../../utils/handleError';
+import defaultCover from '../../assets/image/hotel-cover.png';
+import './index.scss';
 
 @connect(({ voucherModel, userModel }) => ({
   detail: voucherModel.detail,
@@ -37,27 +37,55 @@ class ConfirmCoupon extends Component {
     const { user, detail, dispatch } = this.props;
     const { price } = detail;
     const { count } = this.state;
-    Taro.showLoading({ title: '订单支付中' });
-    createVoucherOrders({ voucherPackage: detail._id, price: price * count, customer: user._id }).then(res => {
+    Taro.showLoading({ title: '订单创建中' });
+    createVoucherOrders({
+      voucherPackage: detail._id,
+      price,
+      totalPrice: price * count,
+      number: count,
+      customer: user._id
+    }).then(res => {
       const { data, code } = res;
       const { message = '' } = handleError(res);
       if (!message) {
-        voucherUpdate({ updates: { status: 10 }, conds: { _id: data._id } }).then(res => {
-          const { data, code } = res;
+        payment({ id: data._id, from: 'fx' }).then(res => {
           const { message = '' } = handleError(res);
           if (!message) {
-            Taro.hideLoading();
-            Taro.reLaunch({
-              url: '/pages/coupon/index?type=reload'
-            });
+            const { nonceStr, paySign, signType, timeStamp, package: payPackage } = res.data;
+            Taro.requestPayment({
+              nonceStr,
+              paySign,
+              package: payPackage,
+              timeStamp,
+              signType,
+              success(res) {
+                Taro.showToast({
+                  title: '支付成功',
+                  icon: 'none'
+                });
+                Taro.reLaunch({
+                  url: '/pages/coupon/index?type=reload'
+                });
+              },
+              fail(res) {
+                Taro.showToast({
+                  title: '支付失败',
+                  icon: 'none'
+                })
+              }
+            })
           } else {
             Taro.showToast({
               title: message,
               icon: 'none'
             })
           }
+          Taro.hideLoading();
         }).catch(err => {
-
+          Taro.showToast({
+            title: '服务器异常，请稍后重试',
+            icon: 'none'
+          })
         })
       } else {
         Taro.showToast({
@@ -65,12 +93,17 @@ class ConfirmCoupon extends Component {
           icon: 'none'
         })
       }
+      Taro.hideLoading();
     }).catch(err => {
-      TAro.showToast({
+      Taro.showToast({
         title: '服务器异常，请稍后重试',
         icon: 'none'
       })
     });
+  };
+
+  handleError = e => {
+    e.target.src = defaultCover;
   };
 
   render() {
@@ -82,7 +115,8 @@ class ConfirmCoupon extends Component {
         <View className='pageTopLine'/>
         <View className='coupon-cover'>
           <Image
-            src={image || 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1593670274645&di=a830446a157ce2d8619c5e56784115b2&imgtype=0&src=http%3A%2F%2Fimages4.c-ctrip.com%2Ftarget%2F2A020800000030cxh7F27.jpg'}/>
+            mode='aspectFill'
+            src={image || defaultCover} onError={this.handleError}/>
         </View>
         <View className='padding-lg'>
           <View className='text-line-zh text-base text-bold-6'>{name}</View>

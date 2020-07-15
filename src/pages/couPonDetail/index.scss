@@ -1,7 +1,5 @@
-.index{
+.index {
   position: relative;
-  padding-bottom: 60Px;
-  min-height: 100vh;
 }
 
 .hotel-cover {
@@ -10,20 +8,48 @@
 
 
 .segmented {
-  border-bottom: 1PX solid rgba(223,223,223,1);
+  border-bottom: 1PX solid rgba(223, 223, 223, 1);
+
   .segmented-item {
     height: 48PX;
     line-height: 40PX;
   }
 }
 
-.booking-btn{
+.booking-btn {
   position: fixed;
   bottom: 0;
   left: 0;
   width: 100%;
-  .at-button{
+
+  .at-button {
     height: 40Px;
     line-height: 40Px;
   }
+}
+
+.scrollView {
+  height: 100vh;
+  padding-bottom: 40Px;
+  min-height: 100vh;
+}
+
+.menu-wrap {
+  width: 100%;
+  background: #fff;
+  line-height: 48PX;
+  border-bottom: 1PX solid rgba(223, 223, 223, 1);
+
+  &.fixed {
+    position: fixed;
+    top: 0;
+  }
+
+  .currentView {
+    border-bottom: 2PX solid #ffa940;
+  }
+}
+
+.richText-wrap{
+  //padding-top: 40PX;
 }

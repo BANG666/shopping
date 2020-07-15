@@ -1,18 +1,11 @@
 import React from 'react';
-import { Component } from '@tarojs/taro';
-import { Block, Picker, RichText, Text, View } from '@tarojs/components';
+import Taro, { Component } from '@tarojs/taro';
+import { Block, Picker, Text, View } from '@tarojs/components';
 import { connect } from '@tarojs/redux';
 import _ from 'underscore';
 import dayJs from 'dayjs';
 import { AtButton, AtFloatLayout, AtForm, AtInput, AtList, AtListItem, AtTextarea } from 'taro-ui';
-import {
-  formatCancellationPolicy,
-  formatRoomBed,
-  formatRoomWifi,
-  formatRoomWindow,
-  getDay,
-  getToDayAndAfterDay
-} from '../../utils/util';
+import { formatRoomBed, formatRoomWifi, formatRoomWindow, getDay, getToDayAndAfterDay } from '../../utils/util';
 import { createHotelOrder, getVoucherOrderList } from '../../servers/servers';
 
 import './index.scss';
@@ -33,19 +26,23 @@ class Booking extends Component {
       openRemark: false,
       showNameErr: false,
       showMobileErr: false,
-      mobile: null,
+      mobile: props.user.mobileNum || '',
       name: '',
       mail: '',
       remark: '',
       defaultRemark: '',
-      arrivalTime: '',
-      season: ['12:00-13:00', '13:00-14:00', '14:00-15:00', '15:00-16:00', '16:00-17:00', '17:00-18:00']
+      // arrivalTime: '',
+      // season: ['12:00-13:00', '13:00-14:00', '14:00-15:00', '15:00-16:00', '16:00-17:00', '17:00-18:00']
     };
   }
 
   config = {
     navigationBarTitleText: '预订酒店'
   };
+
+  componentDidMount() {
+    this.getVoucherOrderList();
+  }
 
   componentWillUnmount() {
   };
@@ -70,25 +67,27 @@ class Booking extends Component {
   };
 
   handleBooking = () => {
-    const { user, params, roomType, hotelDetail } = this.props;
-    const { name, mobile, mail, remark, arrivalTime } = this.state;
-    if (name && mobile && arrivalTime) {
+    const { user, params, roomType, hotelDetail, voucher } = this.props;
+    const { name, mobile, mail } = this.state;
+    const filterVouchers = _.filter(voucher, el => el.selected);
+    if (name && mobile) {
       const payload = {
         customer: user._id,
-        vouchers: ['5f083b4efcf45e3f0c61c6af'],
+        vouchers: _.map(filterVouchers, el => el._id),
         roomType: roomType._id,
         hotel: hotelDetail._id,
         checkInDate: params.checkInAt,
         checkOutDate: params.checkOutAt,
-        roomNights: params.dateNum,
+        roomNights: params.dateNum * params.roomCount,
+        rooms: params.roomCount,
         status: 0,
         contact: {
           name,
           email: mail,
           phone: mobile
-        },
-        estimatedArrivalTime: dayJs().startOf('d')
+        }
       };
+      // console.log(payload);
       createHotelOrder({ data: payload }).then(res => {
         const { data, code } = res;
         const { message = '' } = handleError(res);
@@ -98,7 +97,7 @@ class Booking extends Component {
             icon: 'success'
           });
           Taro.reLaunch({
-            url: '/pages/bookingSuccess/index'
+            url: '/hotelPages/bookingSuccess/index'
           })
         } else {
           Taro.showToast({
@@ -107,26 +106,37 @@ class Booking extends Component {
           });
         }
       }).catch(err => {
-        console.log(err);
+        Taro.showToast({
+          title: '房券未生效',
+          icon: 'none'
+        });
       })
     } else {
       this.setState({
         showNameErr: !name,
-        showMobileErr: !mobile,
-        showArrivalTime: !arrivalTime
+        showMobileErr: !mobile
       });
     }
   };
 
   getVoucherOrderList = () => {
-    const { hotelDetail, dispatch } = this.props;
+    const { hotelDetail, params, dispatch } = this.props;
     getVoucherOrderList({ conds: { type: 'available', hotel: hotelDetail._id } }).then(res => {
       const { data, code } = res;
       const { message = '' } = handleError(res);
       if (!message) {
+        const { roomCount, dateNum } = params;
         dispatch({
           type: UPDATE_VOUCHER,
-          params: data
+          payload: _.map(data, (item, index) => {
+            if (index < roomCount * dateNum) {
+              return {
+                ...item,
+                selected: true
+              }
+            }
+            return { ...item, disabled: true }
+          })
         })
       } else {
         Taro.showToast({
@@ -140,27 +150,21 @@ class Booking extends Component {
   };
 
   render() {
-    const { params, roomType, voucher } = this.props;
-    const { mobile, name, mail, arrivalTime, season, remark, defaultRemark, openRemark, showNameErr, showMobileErr, showArrivalTime } = this.state;
+    const { params, roomType, voucher = [] } = this.props;
+    const { mobile, name, mail, defaultRemark, openRemark, showNameErr, showMobileErr } = this.state;
     const { checkInAt, checkOutAt, roomCount, dateNum } = params;
     const checkInToDay = getToDayAndAfterDay(checkInAt) || getDay(dayJs(checkInAt).day());
-    const checkInStr = `${dayJs(checkInAt).format('MM')}月${dayJs(checkInAt).format('DD')}`;
+    const checkInStr = `${dayJs(checkInAt).format('MM[月]DD[日]')}`;
     const checkOutToDay = getToDayAndAfterDay(checkOutAt) || getDay(dayJs(checkOutAt).day());
-    const checkOutStr = `${dayJs(checkOutAt).format('MM')}月${dayJs(checkOutAt).format('DD')}`;
+    const checkOutStr = `${dayJs(checkOutAt).format('MM[月]DD[日]')}`;
     const roomBedTypeStr = `${roomType.title} / ${formatRoomBed(roomType.bedTypeCode).name}`;
-    const { cancelPolicyStr, dateStr } = formatCancellationPolicy(checkInAt, 1, {
-      deadlineDay: 0,
-      percent: 0,
-      amount: 0,
-      nights: 0,
-      deadline: 18
-    });
+
     const filterVouchers = _.filter(voucher, el => el.selected);
-    const pluckVoucher = _.pluck(filterVouchers, '_id');
-    const voucherCount = voucher.length;
-    const voucherSelectCount = filterVouchers.length;
-    const needVoucherCount = dateNum * roomCount;
+    const voucherCount = voucher.length;//所有房券的数量
+    const voucherSelectCount = filterVouchers.length; // 已选择房券的数量
+    const needVoucherCount = dateNum * roomCount;// 所需要的房券数量
     const roomCharacteristic = [];
+    const firstVoucher = _.first(voucher);
     _.forEach(
       _.pick(roomType, [
         'area',
@@ -241,7 +245,9 @@ class Booking extends Component {
         <View className='cancelInfo padding-md flex align-start margin-top-sm'>
           <Text className='cuIcon-notification margin-right-md text-main'/>
           <View className='text-sm text-gray-8 text-line-zh'>
-            <RichText nodes={`取消修改说明：${cancelPolicyStr} ${dateStr}`}/>
+            预订提示：酒店相关部门正在确认您的预订，将在<Text className='text-main'>30分钟之内短信通知您的订单状态</Text>，请耐心等待。<Text
+            className='text-main'>订单一经确认不可变更或取消</Text>。
+            {/*<RichText nodes={`取消修改说明：${cancelPolicyStr} ${dateStr}`}/>*/}
           </View>
         </View>
         <View className='bg-white padding-lr-lg padding-top-lg'>
@@ -299,24 +305,24 @@ class Booking extends Component {
                 })
               }}
             />
-            <Picker mode='selector' range={season} onChange={e => {
-              const { detail } = e;
-              const timeStr = season[+detail.value];
-              this.setState({
-                arrivalTime: timeStr,
-                showArrivalTime: !timeStr
-              })
-            }}>
-              <AtList>
-                <AtListItem
-                  title='抵达酒店时间(必选)'
-                  extraText={arrivalTime || '选择抵达酒店时间'}
-                />
-              </AtList>
-            </Picker>
-            {
-              showArrivalTime ? (<View className='text-red text-sm'>请选择到店时间</View>) : null
-            }
+            {/*<Picker mode='selector' range={season} onChange={e => {*/}
+            {/*  const { detail } = e;*/}
+            {/*  const timeStr = season[+detail.value];*/}
+            {/*  this.setState({*/}
+            {/*    arrivalTime: timeStr,*/}
+            {/*    showArrivalTime: !timeStr*/}
+            {/*  })*/}
+            {/*}}>*/}
+            {/*  <AtList>*/}
+            {/*    <AtListItem*/}
+            {/*      title='抵达酒店时间(必选)'*/}
+            {/*      extraText={arrivalTime || '选择抵达酒店时间'}*/}
+            {/*    />*/}
+            {/*  </AtList>*/}
+            {/*</Picker>*/}
+            {/*{*/}
+            {/*  showArrivalTime ? (<View className='text-red text-sm'>请选择到店时间</View>) : null*/}
+            {/*}*/}
             {/*<View className='remark flex justify-between align-center'*/}
             {/*      onClick={() => this.setState({ openRemark: true, defaultRemark: remark })}>*/}
             {/*  <View className='remark-title text-base'>备选要求</View>*/}
@@ -328,11 +334,15 @@ class Booking extends Component {
             {/*  </View>*/}
             {/*</View>*/}
             <View className='remark flex justify-between align-center'
-                  onClick={() => Taro.navigateTo({ url: '/pages/selectCoupon/index' })}>
+                  onClick={() => Taro.navigateTo({ url: '/hotelPages/selectCoupon/index' })}>
               <View className='remark-title text-base'>选择优惠券</View>
               <View className='flex-sub margin-left-xl text-sm text-right flex align-center'>
-                <View className='text-cut flex-sub padding-right-md remark-text'>
-                  <Text className='text-gray-9'>必选</Text>
+                <View className='text-cut flex-sub padding-right-md remark-text text-gray-9'>
+                  <Text>已选{voucherSelectCount}张房券</Text>
+                  {
+                    needVoucherCount > voucherSelectCount ? (
+                      <Text>，还需{needVoucherCount - voucherSelectCount}张房券</Text>) : null
+                  }
                 </View>
                 <Text className='cuIcon-right text-gray-9'/>
               </View>
@@ -342,26 +352,37 @@ class Booking extends Component {
         <View className='footer-booking-wrap flex justify-between align-center padding-left-md bg-white'>
           <View className='flex flex-twice text-sm'>
             {
-              voucherCount - needVoucherCount >= 0 ? (
+              voucherSelectCount ? (
                 <Block>
-                  <View>
-                    <View>房券不足</View>
-                    <View className='text-main margin-top-sm'>跳转购买>> </View>
-                  </View>
-                  <Text className='cuIcon-info margin-left-lg' onClick={() => {
-                    Taro.showToast({
-                      title: '您将使用4张券，同类券剩余3张，还需1张，点击立刻跳转购买页面',
-                      icon: 'none',
-                      duration: 3000
-                    })
-                  }}/>
-                </Block>) : (
-                voucherSelectCount ? (
-                  <View>将使用{voucherSelectCount}张同类型房券，剩余{voucherCount - voucherSelectCount}张</View>) : null
-              )
+                  {
+                    needVoucherCount > voucherCount ? (
+                      <View className='flex-sub flex justify-between align-center'>
+                        <View>
+                          <Text className='text-red'>房券不足</Text>
+                          <Text className='cuIcon-info margin-left-lg' onClick={() => {
+                            Taro.showToast({
+                              title: `您将使用${needVoucherCount}张券，同类券剩余${voucherCount}张，还需${needVoucherCount - voucherCount}张，点击立刻跳转购买页面`,
+                              icon: 'none',
+                              duration: 3000
+                            })
+                          }}/>
+                        </View>
+                        <Text className='text-main margin-right-lg' onClick={() => {
+                          Taro.switchTab({
+                            url: `/pages/index/index`
+                          })
+                        }}>{`跳转购买<<`}</Text>
+                      </View>) : (
+                      <View
+                        className='text-sm'>将使用{needVoucherCount}张同类型房券，剩余{voucherCount - needVoucherCount}张</View>)
+                  }
+                </Block>
+              ) : null
             }
+
           </View>
-          <AtButton className='bg-main text-center text-base booking-btn' onClick={this.handleBooking}>预 订</AtButton>
+          <AtButton disabled={voucherSelectCount < needVoucherCount}
+                    className='bg-main text-center text-base booking-btn' onClick={this.handleBooking}>预 订</AtButton>
         </View>
         <AtFloatLayout isOpened={openRemark} title='' onClose={() => {this.setState({ openRemark: false })}}>
           <View className='flex justify-between align-center margin-bottom-lg remark-action text-lg'>

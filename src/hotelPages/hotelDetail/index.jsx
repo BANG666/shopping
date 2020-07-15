@@ -1,5 +1,5 @@
 import React from 'react';
-import { Component } from '@tarojs/taro';
+import Taro, { Component } from '@tarojs/taro';
 import { Image, RichText, Text, View } from '@tarojs/components';
 import _ from 'underscore';
 import dayJs from 'dayjs';
@@ -9,6 +9,7 @@ import { formatRoomBed, formatRoomWifi, formatRoomWindow } from '../../utils/uti
 import { getHotelRoomType } from '../../servers/servers';
 import { UPDATE_ROOM_TYPE } from '../../redux/actions/hotel';
 import handleError from '../../utils/handleError';
+import defaultCover from '../../assets/image/hotel-cover.png';
 import './index.scss';
 
 function generateUUID() {
@@ -98,9 +99,7 @@ class HotelDetail extends Component {
         }
       })
     });
-    console.log(query.select('#' + uid));
     query.select('#' + uid).boundingClientRect(data => {
-      console.log(data);
       if (!data) return false;
       if (!isOpen) {
         Taro.pageScrollTo({
@@ -116,8 +115,12 @@ class HotelDetail extends Component {
       payload: item
     });
     Taro.navigateTo({
-      url: `/pages/booking/index`
+      url: `/hotelPages/booking/index`
     })
+  };
+
+  handleError = e => {
+    e.target.src = defaultCover;
   };
 
   render() {
@@ -125,24 +128,25 @@ class HotelDetail extends Component {
     const { params, hotelDetail = {} } = this.props;
     const { checkInAt, checkOutAt, dateNum } = params;
     const { lng = 121.499428, lat = 31.235754, address, name, openedAt, decoratedAt, introduction, description, contactNumber } = hotelDetail;
-    const checkInStr = dayJs(checkInAt).format('MM') + '月' + dayJs(checkInAt).format('DD') + '日';
-    const checkOutStr = dayJs(checkOutAt).format('MM') + '月' + dayJs(checkOutAt).format('DD') + '日';
+    const checkInStr = dayJs(checkInAt).format('MM[月]DD[日]');
+    const checkOutStr = dayJs(checkOutAt).format('MM[月]DD[日]');
     return (
       <View className='index'>
         <View className='pageTopLine'/>
         <AtMessage/>
         <View className='hotel-pic-wrap' onClick={() => {
-          Taro.navigateTo({
-            url: '/pages/hotelPhoto/index'
-          })
+          // Taro.navigateTo({
+          //   url: '/hotelPages/hotelPhoto/index'
+          // })
         }}>
           <Image lazyLoad
-                 src={hotelDetail.cover || 'https://fx-photos.chuxingpay.com/remote/d0445c1afcf836c2dd36bc770cb1877e.jpg?&auth_key=1593678192-48e33d9f83bd4236b2ac9ac296818f6a-0-a867112b94b6a2eb8b2cd62fc7ced19c'}/>
+                 mode='aspectFill'
+                 src={hotelDetail.cover || defaultCover} onError={this.handleError}/>
         </View>
         <View className='hotel-float-top padding-lr-lg'>
           <View className='hotel-name-wrap text-black padding-md' onClick={() => {
             Taro.navigateTo({
-              url: '/pages/hotelFacilities/index'
+              url: '/hotelPages/hotelFacilities/index'
             })
           }}>
             <View className='text-lg text-bold-6 margin-bottom-sm'>{name}</View>
@@ -183,8 +187,8 @@ class HotelDetail extends Component {
             </View>
           </View>
           <View
-            className='flex align-center justify-between margin-top-sm padding-lr-md text-base hotel-facilities-wrap'
-            onClick={() => Taro.navigateTo({ url: '/pages/calendar/index' })}>
+            className='flex align-center justify-between margin-top-sm padding-lr-md text-base hotel-facilities-wrap'>
+            {/*onClick={() => Taro.navigateTo({ url: '/pages/calendar/index' })}*/}
             <View>
               <Text>日期</Text>
               <Text className='margin-left-md text-main'>{checkInStr}</Text>
@@ -198,7 +202,7 @@ class HotelDetail extends Component {
         <View className='rooms-list'>
           {
             roomTypes.map((item, index) => {
-              const { isOpen, title, photos, uid } = item;
+              const { isOpen, title, photos, uid, referencePrice, breakfast = {} } = item;
               const roomCharacteristic = [];
               const style = {
                 transform: isOpen ? 'translateY(0)' : 'translateY(-50%)',
@@ -251,18 +255,32 @@ class HotelDetail extends Component {
                   }
                 }
               );
+              let breakfastStr = `包含${breakfast.qty}份早餐`;
+              if(breakfast.price){
+                breakfastStr += ` (另需加收${breakfast.price}/份)`
+              }
               return (
                 <View key={index} className={`margin-bottom-lg ${isOpen ? '' : 'collapse-cell--hide'} `}>
                   <View className='room-pic' id={uid} onClick={() => this.handleRoomItemClick(item)}>
                     <Image lazyLoad
-                           src={photos[0] || 'https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=2778184159,1139093014&fm=26&gp=0.jpg'}/>
+                           mode='aspectFill'
+                           src={photos[0] || defaultCover} onError={this.handleError}/>
                     <View className='room-pic-float'>
-                      {/*<View className='float-top padding-left-md padding-top-md flex justify-end'>*/}
-                      {/*  <View className='room-pic-price bg-main padding-lr-sm'><Text*/}
-                      {/*    className='text-sm'>CNY 1,080 </Text><Text className='text-xs'>每晚</Text></View>*/}
-                      {/*</View>*/}
-                      <View className='float-bottom padding-md'><Text
-                        className='text-lg text-white'>{title}</Text></View>
+                      <View className='float-top padding-left-md padding-top-md flex justify-end'>
+                        <View className='room-pic-price bg-main padding-lr-sm'><Text
+                          className='text-sm'>参考价 CNY {referencePrice} </Text><Text className='text-xs'>每晚</Text></View>
+                      </View>
+                      <View className='float-bottom padding-md flex justify-between align-center'>
+                        <Text className='text-lg text-white'>{title}</Text>
+                        {
+                          photos.length ? (<Text className='cuIcon-xiangce text-white' onClick={() => {
+                            Taro.previewImage({
+                              current: photos[0],
+                              urls: photos
+                            })
+                          }} />) : null
+                        }
+                      </View>
                     </View>
                   </View>
                   <View
@@ -286,11 +304,11 @@ class HotelDetail extends Component {
                         </View>
                       </View>
                       <View className='text-base margin-top-lg'>
-                        <View className='text-bold'>优享价 / 自选包价（特大床）</View>
+                        <View className='text-bold'>{breakfastStr}</View>
                         <View className='flex justify-between align-center margin-top-sm'>
-                          <View className='reference-price bg-main text-center text-sm'>参考价</View>
+                          <View className='reference-price bg-main text-center text-sm'>半小时确认</View>
                           <View className='rate-price text-right'>
-                            {/*<View className='text-main'>CNY 980</View>*/}
+                            {/*<View className='text-main'>CNY {referencePrice}</View>*/}
                             <View className='booking-btn bg-main text-center margin-top-sm'
                                   onClick={() => this.handleClickBooking(item)}>预 订</View>
                           </View>

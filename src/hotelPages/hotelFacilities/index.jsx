@@ -1,9 +1,9 @@
 import React from 'react';
 import { Component } from '@tarojs/taro';
-import { Text, View, Image } from '@tarojs/components';
+import { Text, View } from '@tarojs/components';
 import { connect } from '@tarojs/redux';
 import _ from 'underscore';
-import { facilityTypes } from '../../assets/hotelBase';
+import { facilityTypes } from '../../utils/util';
 import alipayPayIcon from '../../assets/image/payment-icon/alipay.png';
 import wechatPayIcon from '../../assets/image/payment-icon/wechat.png';
 import applePayIcon from '../../assets/image/payment-icon/apple.png';
@@ -208,23 +208,27 @@ class HotelFacilities extends Component {
             <View className='text-gray-6 text-sm'>退房：{checkInAndOut[1]}点钟以前</View>
           </View>
         </View>
-        <View className='margin-top-xl'>
-          <View className='padding-md'>
-            <View className='margin-bottom-lg text-bold leader'>付款方式</View>
-            <View className='payMethodIcons'>
-              {payMethodsIcons.map(el => {
-                return (
-                  <View key={el.name} className='payment-item'>
-                    <View
-                      className='margin-sm payment-item-pic'
-                      style={{ backgroundImage: `url(${el.icon})`}}
-                    />
-                  </View>
-                );
-              })}
+        {
+          _.isEmpty(payMethods) ? null : (
+            <View className='margin-top-xl'>
+              <View className='padding-md'>
+                <View className='margin-bottom-lg text-bold leader'>付款方式</View>
+                <View className='payMethodIcons'>
+                  {payMethodsIcons.map(el => {
+                    return (
+                      <View key={el.name} className='payment-item'>
+                        <View
+                          className='margin-sm payment-item-pic'
+                          style={{ backgroundImage: `url(${el.icon})` }}
+                        />
+                      </View>
+                    );
+                  })}
+                </View>
+              </View>
             </View>
-          </View>
-        </View>
+          )
+        }
       </View>
     );
   }

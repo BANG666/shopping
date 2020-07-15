@@ -1,7 +1,5 @@
 const initSate = {
-  user: {
-
-  }
+  orderDetail: {}
 };
 
 export default initSate;

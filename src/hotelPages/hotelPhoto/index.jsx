@@ -1,11 +1,11 @@
 import React from 'react';
-import { Component } from '@tarojs/taro';
+import Taro, { Component } from '@tarojs/taro';
 import { Image, View } from '@tarojs/components';
 import { connect } from '@tarojs/redux';
 import _ from 'underscore';
 import defaultImage from '../../assets/image/hotel-cover.png';
-import './index.scss';
 import empty_list from '../../assets/image/empty.png';
+import './index.scss';
 
 @connect(({ hotelModel }) => ({
   hotelDetail: hotelModel.hotelDetail
@@ -17,7 +17,7 @@ class HotelPhoto extends Component {
     const { photos = [] } = hotelDetail;
     this.state = {
       defaultImg: null,
-      list: _.pluck(photos, 'url')
+      list: photos
     };
   }
 
@@ -55,6 +55,7 @@ class HotelPhoto extends Component {
                   return (
                     <View key={item} className='item-wrap' onClick={() => this.handleImageClick(item)}>
                       <Image
+                        mode='aspectFill'
                         lazyLoad
                         onError={(e) => {
                           this.setState({

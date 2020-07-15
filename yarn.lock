@@ -11008,11 +11008,6 @@ write@^0.2.1:
   dependencies:
     mkdirp "^0.5.1"
 
-x-city@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/x-city/-/x-city-1.0.2.tgz#8243721c7be3c5eca493e2fcae3f945411ea8f13"
-  integrity sha512-fM9V/cbNsycXKuntMXlwturvcn3I118yUCDiLkFomaQYMevzjD+2+dn+jp5bCQlruy9tfltElIF/29SwRkXgzw==
-
 x-is-string@^0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/x-is-string/-/x-is-string-0.1.0.tgz#474b50865af3a49a9c4657f05acd145458f77d82"

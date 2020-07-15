@@ -10,6 +10,9 @@
   &.selected{
     border: 1PX solid #ffa940;
   }
+  .disabled{
+    background: rgba(0,0,0,.1);
+  }
 }
 
 .footer-wrap{

@@ -1,7 +1,6 @@
 .index {
-  position: relative;
   min-height: 100vh;
-  background: rgba(246, 247, 248, 1);
+  background: rgba(245, 246, 247, 1);
 }
 
 .at-tabs {
@@ -23,30 +22,18 @@
   border-radius: 5PX;
   box-shadow: 0 2Px 8Px 0 rgba(238, 239, 240, 1);
 
-  .order-pic {
+  .hotel-pic {
     width: 80Px;
     height: 80PX;
     border-radius: 5PX;
     overflow: hidden;
   }
 
-  .order-payment-btn {
-    width: 64PX;
-    height: 26PX;
-    line-height: 26PX;
-    border-radius: 5PX;
-    border: 1Px solid #ffa940;
+  .at-button {
+    border-color: rgba(232, 232, 232, 1);
+  }
+
+  .at-divider {
+    height: 40Px;
   }
 }
-
-.payment-btn {
-  width: 60Px;
-  height: 30PX;
-  line-height: 30PX;
-  border-radius: 5PX;
-}
-
-.coupon-cover {
-  height: 212PX;
-}
-

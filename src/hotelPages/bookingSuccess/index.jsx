@@ -1,9 +1,8 @@
 import React from 'react';
-import { Component } from '@tarojs/taro';
+import Taro, { Component } from '@tarojs/taro';
 import { Text, View } from '@tarojs/components';
 
 import './index.scss';
-import { AtButton } from 'taro-ui';
 
 class Coupon extends Component {
   constructor(props) {
@@ -38,7 +37,7 @@ class Coupon extends Component {
       if (countDown === 1) {
         clearInterval(this.timer);
         Taro.reLaunch({
-          url: '/pages/order/index?type=reload'
+          url: '/pages/bookingOrder/index?type=reload'
         });
         return;
       }
@@ -58,8 +57,8 @@ class Coupon extends Component {
             <Text className='cuIcon-check2'/>
           </View>
           <View className='text-sm'>订单已经提交成功，酒店稍后确定您的预订状态。 </View>
-          <View className='margin-tb-md'>{countDown}秒后将跳转至我的预订</View>
-          <View className='goBackHome bg-main text-center text-base' onClick={() => Taro.switchTab({url: ''})}>返回首页</View>
+          <View className='margin-tb-md text-sm'>{countDown}秒后将跳转至订单页面</View>
+          <View className='goBackHome bg-main text-center text-base' onClick={() => Taro.switchTab({url: '/pages/index/index'})}>返回首页</View>
         </View>
       </View>
     );
