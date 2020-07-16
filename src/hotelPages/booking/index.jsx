@@ -145,7 +145,10 @@ class Booking extends Component {
         });
       }
     }).catch(err => {
-      console.log(err);
+      Taro.showToast({
+        title: '服务器异常，请稍后重试',
+        icon: 'none'
+      })
     })
   };
 

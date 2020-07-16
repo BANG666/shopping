@@ -1,6 +1,6 @@
 import React from 'react';
-import { Component } from '@tarojs/taro';
-import { Image, View } from '@tarojs/components';
+import Taro, { Component } from '@tarojs/taro';
+import { Block, Image, View } from '@tarojs/components';
 import { connect } from '@tarojs/redux';
 import { getHotelList } from '../../servers/servers';
 import _ from 'underscore';
@@ -9,6 +9,7 @@ import { UPDATE_HOTEL_DETAIL } from '../../redux/actions/hotel';
 import defaultCover from '../../assets/image/hotel-cover.png';
 import empty_list from '../../assets/image/empty.png';
 import './index.scss';
+import Skeleton from '../../components/Skeleton/Skeleton';
 
 @connect(({ hotelModel }) => ({
   params: hotelModel.params
@@ -18,6 +19,7 @@ class HotelList extends Component {
     super(props);
     this.state = {
       list: [],
+      isLoad: false,
       paginate: {
         pageLimit: 30,
         pageNum: 1
@@ -58,7 +60,8 @@ class HotelList extends Component {
       const { message = '' } = handleError(res);
       if (!message) {
         this.setState({
-          list: data
+          list: data,
+          isLoad: true
         })
       } else {
         Taro.showToast({
@@ -68,7 +71,10 @@ class HotelList extends Component {
       }
       Taro.hideLoading();
     }).catch(err => {
-      console.log(err);
+      Taro.showToast({
+        title: '服务器异常，请稍后重试',
+        icon: 'none'
+      })
     });
   };
 
@@ -87,7 +93,7 @@ class HotelList extends Component {
   };
 
   render() {
-    const { list } = this.state;
+    const { list, isLoad } = this.state;
     return (
       <View className='index'>
         <View className='pageTopLine'/>
@@ -113,7 +119,15 @@ class HotelList extends Component {
           })
         }
         {
-          list.length === 0 ? (
+          !list.length && !isLoad ? (
+            <Block>
+              {
+                [1, 2, 3, 4].map(el => <Skeleton key={el}/>)
+              }
+            </Block>) : null
+        }
+        {
+          list.length === 0 && isLoad ? (
             <View className='empty_list'>
               <Image className='pic' src={empty_list}/>
               <View className='text-center text-sm'>暂无数据~</View>

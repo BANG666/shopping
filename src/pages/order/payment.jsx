@@ -37,7 +37,7 @@ class OrderPayment extends Component {
 
   handleClickPayment = () => {
     const { orderDetail, dispatch } = this.props;
-    payment({ id: orderDetail._id, from: 'fx' }).then(res => {
+    payment({ id: orderDetail._id, from: 'yh' }).then(res => {
       const { message = '' } = handleError(res);
       if (!message) {
         const { nonceStr, paySign, signType, timeStamp, package: payPackage } = res.data;

@@ -132,16 +132,24 @@ class App extends Component {
         authLoading({ jscode: info.code }).then(res => {
           const { data, code } = res;
           const { isLogin = false, message = '' } = handleError(res);
-          Taro.setStorageSync('token', data.token);
-          Taro.setStorageSync('info', data);
           if (!message) {
+            Taro.setStorageSync('token', data.token);
+            Taro.setStorageSync('info', data);
             store.dispatch({
               type: UPDATE_USER,
               payload: data
             });
+          } else {
+            Taro.showToast({
+              title: message,
+              icon: 'none'
+            })
           }
         }).catch(err => {
-          console.log(err, 'err');
+          Taro.showToast({
+            title: '服务器异常，请稍后重试',
+            icon: 'none'
+          })
         });
       }
     })

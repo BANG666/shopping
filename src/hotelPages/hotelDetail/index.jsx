@@ -60,8 +60,14 @@ class HotelDetail extends Component {
   }
 
   getHotelRoomType = (id) => {
+    const { params } = this.props;
     Taro.showLoading({ title: '加载中' });
-    getHotelRoomType(id).then(res => {
+    getHotelRoomType({
+      id,
+      roomCount: params.roomCount,
+      checkInAt: params.checkInAt,
+      checkOutAt: params.checkOutAt
+    }).then(res => {
       const { data, code } = res;
       const { message = '' } = handleError(res);
       if (!message) {
@@ -202,7 +208,7 @@ class HotelDetail extends Component {
         <View className='rooms-list'>
           {
             roomTypes.map((item, index) => {
-              const { isOpen, title, photos, uid, referencePrice, breakfast = {} } = item;
+              const { isOpen, title, photos, uid, referencePrice, breakfast = {}, roomstate = true } = item;
               const roomCharacteristic = [];
               const style = {
                 transform: isOpen ? 'translateY(0)' : 'translateY(-50%)',
@@ -256,7 +262,7 @@ class HotelDetail extends Component {
                 }
               );
               let breakfastStr = `包含${breakfast.qty}份早餐`;
-              if(breakfast.price){
+              if (breakfast.price) {
                 breakfastStr += ` (另需加收${breakfast.price}/份)`
               }
               return (
@@ -266,19 +272,22 @@ class HotelDetail extends Component {
                            mode='aspectFill'
                            src={photos[0] || defaultCover} onError={this.handleError}/>
                     <View className='room-pic-float'>
-                      <View className='float-top padding-left-md padding-top-md flex justify-end'>
-                        <View className='room-pic-price bg-main padding-lr-sm'><Text
-                          className='text-sm'>参考价 CNY {referencePrice} </Text><Text className='text-xs'>每晚</Text></View>
-                      </View>
+                      {/*<View className='float-top padding-left-md padding-top-md flex justify-end'>*/}
+                      {/*  <View className='room-pic-price bg-main padding-lr-sm'>*/}
+                      {/*    <Text className='text-sm'>参考价 CNY {referencePrice} </Text><Text className='text-xs'>每晚</Text>*/}
+                      {/*  </View>*/}
+                      {/*</View>*/}
                       <View className='float-bottom padding-md flex justify-between align-center'>
                         <Text className='text-lg text-white'>{title}</Text>
                         {
-                          photos.length ? (<Text className='cuIcon-xiangce text-white' onClick={() => {
+                          photos.length ? (<Text className='cuIcon-xiangce text-white text-xxl' onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
                             Taro.previewImage({
                               current: photos[0],
                               urls: photos
                             })
-                          }} />) : null
+                          }}/>) : null
                         }
                       </View>
                     </View>
@@ -309,8 +318,13 @@ class HotelDetail extends Component {
                           <View className='reference-price bg-main text-center text-sm'>半小时确认</View>
                           <View className='rate-price text-right'>
                             {/*<View className='text-main'>CNY {referencePrice}</View>*/}
-                            <View className='booking-btn bg-main text-center margin-top-sm'
-                                  onClick={() => this.handleClickBooking(item)}>预 订</View>
+                            {
+                              roomstate ? (<View className='booking-btn bg-main text-center margin-top-sm'
+                                                 onClick={() => this.handleClickBooking(item)}>预 订</View>) : (
+                                <View className='booking-btn bg-gray text-center margin-top-sm'>预 订</View>
+                              )
+                            }
+
                           </View>
                         </View>
                       </View>

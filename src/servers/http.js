@@ -11,7 +11,7 @@ class httpRequest {
     const BASE_URL = getBaseUrl();
     const header = {
       'content-type': contentType,
-      'oss-process': 'image/quality,q_70',
+      'oss-process': 'image/quality,q_60',
       'Authorization': 'Bearer ' + Taro.getStorageSync('token')
     };
     if ( !_.isEmpty(paginate) ) {

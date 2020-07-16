@@ -9,7 +9,7 @@ export function getHotelList({ data = {}, paginate = {} }) {
 }
 
 export function getHotelRoomType(data) {
-  return HTTP.get(`/voucher-reservations/booking/hotels/${data}`)
+  return HTTP.get(`/voucher-reservations/booking/hotels/${data.id}?roomCount=${data.roomCount}&checkInAt=${data.checkInAt}&checkOutAt=${data.checkOutAt}`)
 }
 
 export function createHotelOrder({ data = {} }) {
@@ -29,6 +29,6 @@ export function getReservation({ data = {}, paginate = {} }) {
   return HTTP.post({
     url: '/voucher-reservations/list',
     data: data,
-    // paginate
+    paginate
   })
 }

@@ -48,7 +48,6 @@ class CouponDetail extends Component {
   handleScroll = ({ detail }) => {
     const { tabsWrapTop } = this.state;
     const scrollTop = detail.scrollTop;
-    // console.log(scrollTop);
     const query = Taro.createSelectorQuery().in(this.$scope);
     query.select('#detail').boundingClientRect(data => {
       if (!data) return false;
@@ -140,7 +139,7 @@ class CouponDetail extends Component {
           onScroll={this.handleScroll}
         >
           <View className='hotel-cover'>
-            <Image src={image || defaultCover} onError={this.handleError}/>
+            <Image mode='aspectFill' src={image || defaultCover} onError={this.handleError}/>
           </View>
           <View className='padding-lg'>
             <View className='text-red text-line-zh text-base text-bold-4'>{name}</View>

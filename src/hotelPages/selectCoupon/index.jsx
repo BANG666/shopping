@@ -57,7 +57,6 @@ class Login extends Component {
     const { roomCount, dateNum } = params;
     const selectedCount = _.filter(list, el => el.selected).length;
     let newList = [];
-    console.log(selectedCount, roomCount * dateNum, 'asdfsadfs');
     if (selectedCount === roomCount * dateNum) {
       newList = _.map(list, el => {
         if (el.selected) {

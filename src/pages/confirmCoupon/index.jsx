@@ -48,7 +48,7 @@ class ConfirmCoupon extends Component {
       const { data, code } = res;
       const { message = '' } = handleError(res);
       if (!message) {
-        payment({ id: data._id, from: 'fx' }).then(res => {
+        payment({ id: data._id, from: 'yh' }).then(res => {
           const { message = '' } = handleError(res);
           if (!message) {
             const { nonceStr, paySign, signType, timeStamp, package: payPackage } = res.data;

@@ -1,6 +1,6 @@
 import React from 'react';
 import Taro, { Component } from '@tarojs/taro';
-import { Image, Text, View } from '@tarojs/components';
+import { Block, Image, Text, View } from '@tarojs/components';
 import { AtTabs, AtTabsPane } from 'taro-ui';
 import { connect } from '@tarojs/redux';
 import dayJs from 'dayjs';
@@ -8,6 +8,7 @@ import _ from 'underscore';
 import { getVoucherOrderList } from '../../servers/servers';
 import handleError from '../../utils/handleError';
 import { UPDATE_PARAMS } from '../../redux/actions/hotel';
+import Skeleton from '../../components/Skeleton/Skeleton';
 import used from '../../assets/image/used.png';
 import expired from '../../assets/image/expired.png';
 import empty_list from '../../assets/image/empty.png';
@@ -23,6 +24,7 @@ class Coupon extends Component {
     this.state = {
       current: 0,
       couponType: 'used',
+      isLoad: false,
       list: []
     };
   }
@@ -52,7 +54,8 @@ class Coupon extends Component {
       const { message = '' } = handleError(res);
       if (!message) {
         this.setState({
-          list: data
+          list: data,
+          isLoad: true
         })
       } else {
         Taro.showToast({
@@ -68,7 +71,8 @@ class Coupon extends Component {
     let type = '';
     this.setState({
       current: index,
-      list: []
+      list: [],
+      isLoad: false
     });
     switch (index) {
       case 0:
@@ -102,7 +106,7 @@ class Coupon extends Component {
   };
 
   render() {
-    const { current, list } = this.state;
+    const { current, list, isLoad } = this.state;
     const tabList = [{ title: '未使用' }, { title: '已使用' }, { title: '已过期' }];
     const unusedList1 = _.groupBy(list, el => {
       return el.template._id
@@ -139,7 +143,7 @@ class Coupon extends Component {
                           <View>{name}</View>
                           <Text className='coupon-use text-xs margin-top-md'>立即使用</Text>
                         </View>
-                        <View className='text-xl text-main' style={{ width: '26px' }}>*{el.length}</View>
+                        <View className='text-xl text-main' style={{ width: '30px' }}>*{el.length}</View>
                       </View>
                     </View>
                   );
@@ -207,12 +211,20 @@ class Coupon extends Component {
           </AtTabsPane>
         </AtTabs>
         {
-          list.length === 0 ? (
+          list.length === 0 && isLoad ? (
             <View className='empty_list'>
               <Image className='pic' src={empty_list}/>
               <View className='text-center text-sm'>暂无数据~</View>
             </View>
           ) : null
+        }
+        {
+          !list.length && !isLoad ? (
+            <Block>
+              {
+                [1, 2, 3, 4].map(el => <Skeleton key={el}/>)
+              }
+            </Block>) : null
         }
       </View>
     );

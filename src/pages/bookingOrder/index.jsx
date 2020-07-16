@@ -1,6 +1,6 @@
 import React from 'react';
 import Taro, { Component } from '@tarojs/taro';
-import { Image, Text, View } from '@tarojs/components';
+import { Block, Image, Text, View } from '@tarojs/components';
 import { AtDivider, AtIcon, AtTabs, AtTabsPane } from 'taro-ui';
 import { connect } from '@tarojs/redux';
 import dayJs from 'dayjs';
@@ -10,6 +10,7 @@ import { dateSpace } from '../../utils/util';
 import empty_list from '../../assets/image/empty.png';
 import defaultCover from '../../assets/image/hotel-cover.png';
 import './index.scss';
+import Skeleton from '../../components/Skeleton/Skeleton';
 
 @connect(({ userModel }) => ({
   user: userModel.user
@@ -20,9 +21,11 @@ class BookingOrder extends Component {
     this.state = {
       current: 0,
       list: [],
-      orderType: undefined,
+      orderType: 0,
+      notMore: false,
+      isLoad: false,
       paginate: {
-        pageLimit: 6,
+        pageLimit: 20,
         pageNum: 1
       }
     };
@@ -48,23 +51,31 @@ class BookingOrder extends Component {
 
   // 触底翻页
   onReachBottom() {
-    const { orderType } = this.state;
-    // this.getOrderList(orderType)
+    const { orderType, paginate: { total }, list } = this.state;
+    if (list.length < total) {
+      this.getOrderList(orderType)
+    } else {
+      this.setState({
+        notMore: true
+      })
+    }
   }
 
   getOrderList = (status = undefined) => {
     const { user } = this.props;
-    const { paginate } = this.state;
+    const { paginate: { pageLimit, pageNum }, list } = this.state;
     Taro.showLoading({ title: '加载中...' });
-    getReservation({ data: { conds: { customer: user._id, status } }, paginate }).then(res => {
-      const { data, code } = res;
+    getReservation({ data: { conds: { customer: user._id, status } }, paginate: { pageLimit, pageNum } }).then(res => {
+      const { data, code, paginate } = res;
       const { message = '' } = handleError(res);
       if (!message) {
         this.setState({
-          list: data,
+          list: [...list, ...data],
+          isLoad: true,
           paginate: {
-            ...paginate,
-            pageNum: paginate.pageNum + 1
+            pageLimit,
+            pageNum: paginate.next || pageNum,
+            total: paginate.total
           }
         })
       } else {
@@ -75,7 +86,10 @@ class BookingOrder extends Component {
       }
       Taro.hideLoading();
     }).catch(err => {
-      console.log(err);
+      Taro.showToast({
+        title: '服务器异常，请稍后重试',
+        icon: 'none'
+      })
     });
   };
 
@@ -99,13 +113,17 @@ class BookingOrder extends Component {
       current: index,
       list: [],
       orderType: type,
+      isLoad: false,
+      notMore: false,
       paginate: {
         pageLimit: 20,
         pageNum: 1
       }
+    }, () => {
+      this.getOrderList(type);
+      Taro.pageScrollTo({ scrollTop: 0 });
     });
-    this.getOrderList(type);
-    Taro.pageScrollTo({ scrollTop: 0 });
+
   };
 
   handleError = e => {
@@ -113,7 +131,7 @@ class BookingOrder extends Component {
   };
 
   render() {
-    const { current, list } = this.state;
+    const { current, list, notMore, isLoad } = this.state;
     const tabList = [{ title: '全部' }, { title: '待确认' }, { title: '已确认' }, { title: '已取消' }];
 
     return (
@@ -316,11 +334,24 @@ class BookingOrder extends Component {
           </AtTabsPane>
         </AtTabs>
         {
-          list.length === 0 ? (
+          list.length === 0 && isLoad ? (
             <View className='empty_list'>
               <Image className='pic' src={empty_list}/>
               <View className='text-center text-sm'>暂无数据~</View>
             </View>
+          ) : null
+        }
+        {
+          !list.length && !isLoad ? (
+            <Block>
+              {
+                [1, 2, 3, 4].map(el => <Skeleton key={el}/>)
+              }
+            </Block>) : null
+        }
+        {
+          list.length && notMore ? (
+            <View className='text-center text-sm text-sm text-gray-8' style={{lineHeight: '40px'}}>已加载全部</View>
           ) : null
         }
       </View>

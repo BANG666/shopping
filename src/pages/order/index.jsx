@@ -1,6 +1,6 @@
 import React from 'react';
 import Taro, { Component } from '@tarojs/taro';
-import { Image, View } from '@tarojs/components';
+import { Block, Image, View } from '@tarojs/components';
 
 import './index.scss';
 import { AtTabs, AtTabsPane } from 'taro-ui';
@@ -10,6 +10,7 @@ import handleError from '../../utils/handleError';
 import empty_list from '../../assets/image/empty.png';
 import { connect } from '@tarojs/redux';
 import { UPDATE_ORDER_VOUCHER } from '../../redux/actions/order';
+import Skeleton from '../../components/Skeleton/Skeleton';
 
 
 @connect(({ orderModel }) => ({
@@ -21,7 +22,10 @@ class Order extends Component {
     this.state = {
       list: [],
       current: 0,
-      paginate:{
+      orderType: 1,
+      notMore: false,
+      isLoad: false,
+      paginate: {
         pageLimit: 20,
         pageNum: 1
       }
@@ -36,31 +40,60 @@ class Order extends Component {
   };
 
   componentDidShow() {
-    this.getOrderList();
   };
 
   componentDidHide() {
   };
 
+  componentDidMount() {
+    this.getOrderList();
+  }
+
+  // 触底翻页
+  onReachBottom() {
+    const { orderType, paginate: { total }, list } = this.state;
+    if (list.length < total) {
+      this.getOrderList(orderType)
+    } else {
+      this.setState({
+        notMore: true
+      })
+    }
+  }
+
   handleClickTabs = index => {
     const type = index + 1;
     this.setState({
       current: index,
-      list: []
+      list: [],
+      orderType: type,
+      isLoad: false,
+      notMore: false,
+      paginate: {
+        pageLimit: 20,
+        pageNum: 1
+      }
+    }, () => {
+      this.getOrderList(type);
+      Taro.pageScrollTo({ scrollTop: 0 });
     });
-    this.getOrderList(type);
-    Taro.pageScrollTo({ scrollTop: 0 });
   };
 
   getOrderList = (status = 1) => {
-    const { paginate } = this.state;
+    const { paginate: { pageLimit, pageNum }, list } = this.state;
     Taro.showLoading({ title: '加载中...' });
-    orderList({ data: {conds: { status }}, paginate }).then(res => {
-      const { data, code } = res;
+    orderList({ data: { conds: { status } }, paginate: { pageLimit, pageNum } }).then(res => {
+      const { data, code, paginate } = res;
       const { message = '' } = handleError(res);
       if (!message) {
         this.setState({
-          list: data
+          list: [...list, ...data],
+          isLoad: true,
+          paginate: {
+            pageLimit,
+            pageNum: paginate.next || pageNum,
+            total: paginate.total
+          }
         })
       } else {
         Taro.showToast({
@@ -77,7 +110,7 @@ class Order extends Component {
   };
 
   render() {
-    const { list, current } = this.state;
+    const { list, current, notMore, isLoad } = this.state;
     const tabList = [{ title: '待支付' }, { title: '已完成' }];
     return (
       <View className='index'>
@@ -132,7 +165,7 @@ class Order extends Component {
                       <View className='flex justify-between'>
                         <View className='order-pic'>
                           <Image
-                            src={voucherPackage.image ||defaultCover}
+                            src={voucherPackage.image || defaultCover}
                             onError={this.handleError}/>
                         </View>
                         <View className='flex-sub margin-lr-md'>
@@ -154,11 +187,24 @@ class Order extends Component {
           </AtTabsPane>
         </AtTabs>
         {
-          list.length === 0 ? (
+          list.length === 0 && isLoad ? (
             <View className='empty_list'>
               <Image className='pic' src={empty_list}/>
               <View className='text-center text-sm'>暂无数据~</View>
             </View>
+          ) : null
+        }
+        {
+          !list.length && !isLoad ? (
+            <Block>
+              {
+                [1, 2, 3, 4].map(el => <Skeleton key={el}/>)
+              }
+            </Block>) : null
+        }
+        {
+          list.length && notMore ? (
+            <View className='text-center text-sm text-sm text-gray-8' style={{lineHeight: '40px'}}>已加载全部</View>
           ) : null
         }
       </View>

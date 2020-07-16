@@ -21,7 +21,7 @@ const customInterceptor = (chain) => {
       pageToLogin();
       return Promise.reject('需要鉴权');
     } else if (res.statusCode === HTTP_STATUS.SUCCESS) {
-      const code = res.data.data.code;
+      const code = res.data.code;
       if (code === 40000 || code === 40001) {
         Taro.setStorageSync('Authorization', '');
         pageToLogin();

@@ -1,7 +1,6 @@
 import React from 'react';
 import Taro, { Component } from '@tarojs/taro';
 import { Image, ScrollView, Swiper, SwiperItem, Text, View } from '@tarojs/components';
-import { AtSearchBar } from 'taro-ui';
 import { getHomeVoucherList } from '../../servers/servers';
 import handleError from '../../utils/handleError';
 import './index.scss';
@@ -11,29 +10,56 @@ class Index extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      keyword: '',
       list: [],
-      bannerList: [
+      hotList: [
         {
-          image: 'http://fx-public.chuxingpay.com/20200715/JJ_A1768.png',
+          image: 'https://fx-public.oss-cn-shanghai.aliyuncs.com/20200716001/WechatIMG84.png',
           _id: '5f0d713e5662590023d8fb8d'
         },
         {
-          image: 'http://fx-public.chuxingpay.com/20200715/JJ_A2188.png',
-          _id: '5f0d713e5662590023d8fb91'
+          image: 'https://fx-public.oss-cn-shanghai.aliyuncs.com/20200716001/WechatIMG82.png',
+          _id: '5f0d713e5662590023d8fb94'
         },
         {
-          image: 'http://fx-public.chuxingpay.com/20200715/JJ_A3839.png',
+          image: 'https://fx-public.oss-cn-shanghai.aliyuncs.com/20200716001/WechatIMG80.png',
           _id: '5f0d713e5662590023d8fb89'
         },
         {
-          image: 'http://fx-public.chuxingpay.com/20200715/JJ_B1088.png',
+          image: 'https://fx-public.oss-cn-shanghai.aliyuncs.com/20200716001/WechatIMG85.png',
           _id: '5f0d713e5662590023d8fb8f'
-        }, {
-          image: 'http://fx-public.chuxingpay.com/20200715/JJ_B1299.png',
+        },
+        {
+          image: 'https://fx-public.oss-cn-shanghai.aliyuncs.com/20200716001/WechatIMG83.png',
+          _id: '5f0d713e5662590023d8fb91'
+        },
+        {
+          image: 'https://fx-public.oss-cn-shanghai.aliyuncs.com/20200716001/WechatIMG81.png',
+          _id: '5f0d713e5662590023d8fb8b'
+        }
+      ],
+      bannerList: [
+        {
+          image: 'http://fx-public.chuxingpay.com/20200716001/3_1768.png',
+          _id: '5f0d713e5662590023d8fb8d'
+        },
+        {
+          image: 'http://fx-public.chuxingpay.com/20200716001/6_1299.png',
           _id: '5f0d713e5662590023d8fb94'
-        }, {
-          image: 'http://fx-public.chuxingpay.com/20200715/JJ_B1688.png',
+        },
+        {
+          image: 'http://fx-public.chuxingpay.com/20200716001/3839.png',
+          _id: '5f0d713e5662590023d8fb89'
+        },
+        {
+          image: 'http://fx-public.chuxingpay.com/20200716001/4_1088.png',
+          _id: '5f0d713e5662590023d8fb8f'
+        },
+        {
+          image: 'http://fx-public.chuxingpay.com/20200716001/5_2188.png',
+          _id: '5f0d713e5662590023d8fb91'
+        },
+        {
+          image: 'http://fx-public.chuxingpay.com/20200716001/2_1688.png',
           _id: '5f0d713e5662590023d8fb8b'
         }
       ]
@@ -61,12 +87,6 @@ class Index extends Component {
   componentDidHide() {
   }
 
-  onChange = val => {
-    this.setState({
-      keyword: val
-    });
-  };
-
   getVoucherList = () => {
     getHomeVoucherList({}).then(res => {
       const { data, code } = res;
@@ -82,7 +102,7 @@ class Index extends Component {
   };
 
   render() {
-    const { keyword, list, bannerList } = this.state;
+    const { list, bannerList, hotList } = this.state;
     return (
       <View className='index'>
         <View className='pageTopLine'/>
@@ -90,7 +110,7 @@ class Index extends Component {
         {/*  value={keyword}*/}
         {/*  onChange={this.onChange}*/}
         {/*/>*/}
-        <View className='margin-lg'>
+        <View className=''>
           <Swiper
             className='test-h'
             indicatorColor='#999'
@@ -113,8 +133,12 @@ class Index extends Component {
             }
           </Swiper>
         </View>
-        <View className='padding-top-lg margin-bottom-lg'>
-          <View className='text-base text-bold margin-bottom-md padding-lr-lg'>热卖中</View>
+        <View className='padding-top-lg margin-tb-lg'>
+          <View className='text-xxl text-bold margin-bottom-lg padding-lr-lg text-center text-main'>
+            <Text>--</Text>
+            <Text className='margin-lr-md'>热 卖 产 品</Text>
+            <Text>--</Text>
+          </View>
           <ScrollView
             className='scrollView padding-left-lg'
             scrollX
@@ -148,10 +172,15 @@ class Index extends Component {
           </ScrollView>
         </View>
         <View className='padding-top-lg'>
-          <View className='text-base text-bold margin-bottom-md padding-lr-lg'>今日特价</View>
+          {/*<View className='text-base text-bold margin-bottom-md padding-lr-lg'>今日特价</View>*/}
+          <View className='text-xxl text-bold margin-bottom-lg padding-lr-lg text-center text-main'>
+            <Text>--</Text>
+            <Text className='margin-lr-md'>今 日 特 价</Text>
+            <Text>--</Text>
+          </View>
           <View className='special-list'>
             {
-              bannerList.map(item => {
+              hotList.map(item => {
                 return (
                   <View key={item._id} className='margin-lg special-item' onClick={() => {
                     Taro.navigateTo({ url: `/pages/couPonDetail/index?id=${item._id}` })
