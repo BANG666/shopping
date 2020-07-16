@@ -321,7 +321,7 @@ class HotelDetail extends Component {
                             {
                               roomstate ? (<View className='booking-btn bg-main text-center margin-top-sm'
                                                  onClick={() => this.handleClickBooking(item)}>预 订</View>) : (
-                                <View className='booking-btn bg-gray text-center margin-top-sm'>预 订</View>
+                                <View className='booking-btn bg-gray text-center margin-top-sm'>已满房</View>
                               )
                             }
 
