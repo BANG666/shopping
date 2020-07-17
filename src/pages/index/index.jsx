@@ -13,27 +13,27 @@ class Index extends Component {
       list: [],
       hotList: [
         {
-          image: 'https://fx-public.oss-cn-shanghai.aliyuncs.com/20200716001/WechatIMG84.png',
+          image: 'http://fx-public.chuxingpay.com/20200717001/481594966900.jpg',
           _id: '5f0d713e5662590023d8fb8d'
         },
         {
-          image: 'https://fx-public.oss-cn-shanghai.aliyuncs.com/20200716001/WechatIMG82.png',
+          image: 'http://fx-public.chuxingpay.com/20200717001/491594966901.jpg',
           _id: '5f0d713e5662590023d8fb94'
         },
         {
-          image: 'https://fx-public.oss-cn-shanghai.aliyuncs.com/20200716001/WechatIMG80.png',
+          image: 'http://fx-public.chuxingpay.com/20200717001/461594966899.jpg',
           _id: '5f0d713e5662590023d8fb89'
         },
         {
-          image: 'https://fx-public.oss-cn-shanghai.aliyuncs.com/20200716001/WechatIMG85.png',
+          image: 'http://fx-public.chuxingpay.com/20200717001/471594966900.jpg',
           _id: '5f0d713e5662590023d8fb8f'
         },
         {
-          image: 'https://fx-public.oss-cn-shanghai.aliyuncs.com/20200716001/WechatIMG83.png',
+          image: 'http://fx-public.chuxingpay.com/20200717001/501594966901.jpg',
           _id: '5f0d713e5662590023d8fb91'
         },
         {
-          image: 'https://fx-public.oss-cn-shanghai.aliyuncs.com/20200716001/WechatIMG81.png',
+          image: 'http://fx-public.chuxingpay.com/20200717001/511594966901.jpg',
           _id: '5f0d713e5662590023d8fb8b'
         }
       ],

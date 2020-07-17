@@ -136,7 +136,7 @@ class Order extends Component {
                           <View className='text-bold text-base margin-top-lg'>金额：￥{totalPrice}</View>
                         </View>
                         <View className='text-sm text-right'>
-                          <View className='text-main margin-bottom-md'>已完成</View>
+                          <View className='text-main margin-bottom-md'>待支付</View>
                           <View>x{number}</View>
                         </View>
                       </View>
