@@ -80,29 +80,36 @@ class Order extends Component {
   };
 
   getOrderList = (status = 1) => {
-    const { paginate: { pageLimit, pageNum }, list } = this.state;
-    Taro.showLoading({ title: '加载中...' });
-    orderList({ data: { conds: { status } }, paginate: { pageLimit, pageNum } }).then(res => {
-      const { data, code, paginate } = res;
-      const { message = '' } = handleError(res);
-      if (!message) {
-        this.setState({
-          list: [...list, ...data],
-          isLoad: true,
-          paginate: {
-            pageLimit,
-            pageNum: paginate.next || pageNum,
-            total: paginate.total
-          }
-        })
-      } else {
-        Taro.showToast({
-          title: message,
-          icon: 'none'
-        });
-      }
-      Taro.hideLoading();
-    }).catch(err => {})
+    const token = Taro.getStorageSync('token');
+    if (token) {
+      const { paginate: { pageLimit, pageNum }, list } = this.state;
+      Taro.showLoading({ title: '加载中...' });
+      orderList({ data: { conds: { status } }, paginate: { pageLimit, pageNum } }).then(res => {
+        const { data, code, paginate } = res;
+        const { message = '' } = handleError(res);
+        if (!message) {
+          this.setState({
+            list: [...list, ...data],
+            isLoad: true,
+            paginate: {
+              pageLimit,
+              pageNum: paginate.next || pageNum,
+              total: paginate.total
+            }
+          })
+        } else {
+          Taro.showToast({
+            title: message,
+            icon: 'none'
+          });
+        }
+        Taro.hideLoading();
+      }).catch(err => {})
+    } else {
+      this.setState({
+        isLoad: true
+      })
+    }
   };
 
   handleError = e => {
@@ -204,7 +211,7 @@ class Order extends Component {
         }
         {
           list.length && notMore ? (
-            <View className='text-center text-sm text-sm text-gray-8' style={{lineHeight: '40px'}}>已加载全部</View>
+            <View className='text-center text-sm text-sm text-gray-8' style={{ lineHeight: '40px' }}>已加载全部</View>
           ) : null
         }
       </View>

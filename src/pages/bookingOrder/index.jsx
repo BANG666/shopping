@@ -39,6 +39,7 @@ class BookingOrder extends Component {
   };
 
   componentDidMount() {
+
     this.getOrderList();
   }
 
@@ -62,35 +63,45 @@ class BookingOrder extends Component {
   }
 
   getOrderList = (status = undefined) => {
-    const { user } = this.props;
-    const { paginate: { pageLimit, pageNum }, list } = this.state;
-    Taro.showLoading({ title: '加载中...' });
-    getReservation({ data: { conds: { customer: user._id, status } }, paginate: { pageLimit, pageNum } }).then(res => {
-      const { data, code, paginate } = res;
-      const { message = '' } = handleError(res);
-      if (!message) {
-        this.setState({
-          list: [...list, ...data],
-          isLoad: true,
-          paginate: {
-            pageLimit,
-            pageNum: paginate.next || pageNum,
-            total: paginate.total
-          }
-        })
-      } else {
+    const token = Taro.getStorageSync('token');
+    if (token) {
+      const { user } = this.props;
+      const { paginate: { pageLimit, pageNum }, list } = this.state;
+      Taro.showLoading({ title: '加载中...' });
+      getReservation({
+        data: { conds: { customer: user._id, status } },
+        paginate: { pageLimit, pageNum }
+      }).then(res => {
+        const { data, code, paginate } = res;
+        const { message = '' } = handleError(res);
+        if (!message) {
+          this.setState({
+            list: [...list, ...data],
+            isLoad: true,
+            paginate: {
+              pageLimit,
+              pageNum: paginate.next || pageNum,
+              total: paginate.total
+            }
+          })
+        } else {
+          Taro.showToast({
+            title: message,
+            icon: 'none'
+          });
+        }
+        Taro.hideLoading();
+      }).catch(err => {
         Taro.showToast({
-          title: message,
+          title: '服务器异常，请稍后重试',
           icon: 'none'
-        });
-      }
-      Taro.hideLoading();
-    }).catch(err => {
-      Taro.showToast({
-        title: '服务器异常，请稍后重试',
-        icon: 'none'
+        })
+      });
+    } else {
+      this.setState({
+        isLoad: true
       })
-    });
+    }
   };
 
   handleClickTabs = index => {
@@ -133,7 +144,6 @@ class BookingOrder extends Component {
   render() {
     const { current, list, notMore, isLoad } = this.state;
     const tabList = [{ title: '全部' }, { title: '待确认' }, { title: '已确认' }, { title: '已取消' }];
-
     return (
       <View className='index'>
         <View className='pageTopLine'/>
@@ -351,7 +361,7 @@ class BookingOrder extends Component {
         }
         {
           list.length && notMore ? (
-            <View className='text-center text-sm text-sm text-gray-8' style={{lineHeight: '40px'}}>已加载全部</View>
+            <View className='text-center text-sm text-sm text-gray-8' style={{ lineHeight: '40px' }}>已加载全部</View>
           ) : null
         }
       </View>

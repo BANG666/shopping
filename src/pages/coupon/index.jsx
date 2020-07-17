@@ -47,24 +47,31 @@ class Coupon extends Component {
   };
 
   getVoucherList = (type = 'available') => {
-    const { user } = this.props;
-    Taro.showLoading({ title: '加载中...' });
-    getVoucherOrderList({ conds: { type, customer: user._id } }).then(res => {
-      const { data, code } = res;
-      const { message = '' } = handleError(res);
-      if (!message) {
-        this.setState({
-          list: data,
-          isLoad: true
-        })
-      } else {
-        Taro.showToast({
-          title: message,
-          icon: 'none'
-        });
-      }
-      Taro.hideLoading();
-    }).catch(err => {})
+    const token =  Taro.getStorageSync('token');
+    if(token) {
+      const { user } = this.props;
+      Taro.showLoading({ title: '加载中...' });
+      getVoucherOrderList({ conds: { type, customer: user._id } }).then(res => {
+        const { data, code } = res;
+        const { message = '' } = handleError(res);
+        if (!message) {
+          this.setState({
+            list: data,
+            isLoad: true
+          })
+        } else {
+          Taro.showToast({
+            title: message,
+            icon: 'none'
+          });
+        }
+        Taro.hideLoading();
+      }).catch(err => {})
+    } else {
+      this.setState({
+        isLoad: true
+      })
+    }
   };
 
   handleClickTabs = index => {

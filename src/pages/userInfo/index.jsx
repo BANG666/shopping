@@ -1,12 +1,12 @@
 import React from 'react';
 import Taro, { Component } from '@tarojs/taro';
-import { Image, Text, View } from '@tarojs/components';
+import { Button, Image, Text, View } from '@tarojs/components';
 import { connect } from '@tarojs/redux';
 import _ from 'underscore';
-import { AtButton, AtDivider, AtIcon } from 'taro-ui';
+import { AtButton, AtDivider, AtIcon, AtModal, AtModalAction, AtModalContent, AtModalHeader } from 'taro-ui';
 import dayJs from 'dayjs';
 import { dateSpace } from '../../utils/util';
-import { getReservation, getVoucherOrderList } from '../../servers/servers';
+import { authLoading, bindPhone, getReservation, getVoucherOrderList } from '../../servers/servers';
 import handleError from '../../utils/handleError';
 import all_order_icon from '../../assets/image/all_order.png';
 import await_payment_icon from '../../assets/image/await_payment.png';
@@ -14,6 +14,7 @@ import my_booking_icon from '../../assets/image/my_booking.png';
 import to_be_used_icon from '../../assets/image/to_be_used.png';
 import defaultCover from '../../assets/image/hotel-cover.png';
 import './index.scss';
+import { UPDATE_USER } from '../../redux/actions/user';
 
 @connect(({ userModel }) => ({
   user: userModel.user
@@ -25,10 +26,11 @@ class UserInfo extends Component {
     this.state = {
       wxUserInfo: wxUserInfo || {},
       orderList: [],
-      voucherCount: 0
+      voucherCount: 0,
+      showLoginModel: false,
+      showPhoneModel: false
     };
   }
-
 
   config = {
     navigationBarTitleText: '优惠券'
@@ -38,8 +40,11 @@ class UserInfo extends Component {
   };
 
   componentDidShow() {
-    this.getOrderList();
-    this.getVoucherCount();
+    const token =  Taro.getStorageSync('token');
+    if(token){
+      this.getOrderList();
+      this.getVoucherCount();
+    }
   };
 
   componentDidHide() {
@@ -52,6 +57,68 @@ class UserInfo extends Component {
         wxUserInfo: userInfo
       });
       Taro.setStorageSync('wxUserInfo', userInfo);
+      this.login();
+    }
+  };
+
+  login = () => {
+    const { dispatch } = this.props;
+    Taro.login({
+      success: (info) => {
+        authLoading({ jscode: info.code }).then(res => {
+          const { data } = res;
+          const { message = '' } = handleError(res);
+          if (!message) {
+            Taro.setStorageSync('token', data.token);
+            Taro.setStorageSync('info', data);
+            dispatch({
+              type: UPDATE_USER,
+              payload: data
+            });
+            this.setState({
+              showLoginModel: false
+            });
+            if(data.mobileNum){
+              this.setState({
+                showPhoneModel: true
+              })
+            }
+          } else {
+            Taro.showToast({
+              title: message,
+              icon: 'none'
+            })
+          }
+        }).catch(err => {
+          Taro.showToast({
+            title: '服务器异常，请稍后重试',
+            icon: 'none'
+          })
+        });
+      }
+    })
+  };
+
+  bindGetPhone = e => {
+    const { user, dispatch } = this.props;
+    const { detail } = e;
+    if (detail.errMsg === 'getPhoneNumber:ok') {
+      bindPhone({ openid: user.openid, encryptedData: detail.encryptedData, iv: detail.iv }).then(res => {
+        const { data, code } = res;
+        const { message = '' } = handleError(res);
+        if (!message) {
+          this.setState({
+            showPhoneModel: false
+          });
+        } else {
+          Taro.showToast({
+            title: message,
+            icon: 'none'
+          })
+        }
+      }).catch(err => {
+
+      });
     }
   };
 
@@ -96,7 +163,7 @@ class UserInfo extends Component {
   };
 
   render() {
-    const { wxUserInfo, orderList, voucherCount } = this.state;
+    const { wxUserInfo, orderList, voucherCount, showLoginModel, showPhoneModel } = this.state;
     const firstOrder = _.first(orderList) || {};
     const { hotel = {}, checkOutDate, checkInDate, status, contact } = firstOrder;
     let statusStr = '';
@@ -125,8 +192,7 @@ class UserInfo extends Component {
             <Text className='text-base text-bold'>{wxUserInfo.nickName}</Text>
             {
               _.isEmpty(wxUserInfo) ?
-                <AtButton className='get-user-info-btn text-xs' size='small' openType="getUserInfo" type='primary'
-                          onGetUserInfo={this.bindGetUserInfo}>获取信息</AtButton> : null
+                <Text className='get-user-info-btn text-sm text-main' onClick={() => this.setState({showLoginModel: true})}>点击登录账号</Text> : null
             }
           </View>
           <View className='unused-voucher margin-lr-lg margin-tb-md flex align-center text-white justify-between'
@@ -208,6 +274,24 @@ class UserInfo extends Component {
             </View>
           ) : null
         }
+        <AtModal isOpened={showLoginModel}>
+          <AtModalHeader>申请获得以下权限</AtModalHeader>
+          <AtModalContent>
+            获得您的公开信息（昵称，头像等）来成为注册用户，您也可以暂不注册..
+          </AtModalContent>
+          <AtModalAction> <Button onClick={() => this.setState({ showLoginModel: false })}>取消</Button> <Button
+            openType="getUserInfo" type='primary'
+            onGetUserInfo={this.bindGetUserInfo}>确定</Button> </AtModalAction>
+        </AtModal>
+        <AtModal isOpened={showPhoneModel}>
+          <AtModalHeader>申请获得以下权限</AtModalHeader>
+          <AtModalContent>
+            获得您的手机号，您也可以暂不授权..
+          </AtModalContent>
+          <AtModalAction> <Button onClick={() => this.setState({ showPhoneModel: false })}>取消</Button> <Button
+            openType="getPhoneNumber" type='primary'
+            onGetPhoneNumber={this.bindGetPhone}>确定</Button> </AtModalAction>
+        </AtModal>
       </View>
     );
   }

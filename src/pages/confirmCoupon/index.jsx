@@ -83,7 +83,7 @@ class ConfirmCoupon extends Component {
           Taro.hideLoading();
         }).catch(err => {
           Taro.showToast({
-            title: '服务器异常，请稍后重试',
+            title: '请先登录',
             icon: 'none'
           })
         })
@@ -96,7 +96,7 @@ class ConfirmCoupon extends Component {
       Taro.hideLoading();
     }).catch(err => {
       Taro.showToast({
-        title: '服务器异常，请稍后重试',
+        title: '请先登录',
         icon: 'none'
       })
     });

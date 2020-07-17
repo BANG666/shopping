@@ -1616,7 +1616,7 @@ export const pageToLogin = () => {
   let path = getCurrentPageUrl();
   if (!path.includes('login')) {
     Taro.navigateTo({
-      url: '/pages/login/login'
+      url: '/pages/login/index'
     });
   }
 };

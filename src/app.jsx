@@ -3,9 +3,6 @@ import Taro, { Component } from '@tarojs/taro';
 import { Provider } from '@tarojs/redux';
 import Index from './pages/index';
 import configStore from './redux/store';
-import { authLoading } from './servers/servers';
-import handleError from './utils/handleError';
-import { UPDATE_USER } from './redux/actions/user';
 import './style/custom-theme.scss';
 import './style/animation.css';
 import './style/iconfont.css';
@@ -23,9 +20,9 @@ class App extends Component {
 
   config = {
     pages: [
-      'pages/login/index',
       'pages/index/index',
       'pages/bookingOrder/index',
+      'pages/login/index',
       'pages/coupon/index',
       'pages/userInfo/index',
       'pages/couPonDetail/index',
@@ -114,7 +111,6 @@ class App extends Component {
   };
 
   componentDidMount() {
-    this.login();
   }
 
   componentDidShow() {
@@ -125,35 +121,6 @@ class App extends Component {
 
   componentDidCatchError() {
   }
-
-  login = () => {
-    Taro.login({
-      success: (info) => {
-        authLoading({ jscode: info.code }).then(res => {
-          const { data, code } = res;
-          const { isLogin = false, message = '' } = handleError(res);
-          if (!message) {
-            Taro.setStorageSync('token', data.token);
-            Taro.setStorageSync('info', data);
-            store.dispatch({
-              type: UPDATE_USER,
-              payload: data
-            });
-          } else {
-            Taro.showToast({
-              title: message,
-              icon: 'none'
-            })
-          }
-        }).catch(err => {
-          Taro.showToast({
-            title: '服务器异常，请稍后重试',
-            icon: 'none'
-          })
-        });
-      }
-    })
-  };
 
   // 在 App 类中的 render() 函数没有实际作用
   // 请勿修改此函数
